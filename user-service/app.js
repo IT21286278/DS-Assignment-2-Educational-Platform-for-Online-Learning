@@ -13,8 +13,9 @@ app.use(express.json()); //Send respones in json fomrat
 app.use(morgan("tiny")); //log requests
 app.use(cors());
 
-app.get("/", (req, res) => {
-  res.send("Hello from express");
+//routes
+app.use("/", (req, res, next) => {
+  return res.status(200).json({ message: "User service is running" });
 });
 
 //server config
@@ -22,7 +23,7 @@ const PORT = process.env.PORT || 9000;
 app.listen(PORT, async () => {
   try {
     await connect();
-    console.log(`Sever is running on port ${PORT}`);
+    console.log(`User service is running on port ${PORT}`);
   } catch (error) {
     console.log(err);
   }
