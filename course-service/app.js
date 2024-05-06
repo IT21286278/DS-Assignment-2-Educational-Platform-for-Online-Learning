@@ -3,8 +3,9 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import cors from "cors";
 import { connect } from "./config/db_con.js";
+import courseRouter from "./routes/course.js";
 
-dotenv.config({ path: "./config/.env" });
+dotenv.config();
 
 const app = express();
 
@@ -13,9 +14,8 @@ app.use(express.json()); //Send respones in json fomrat
 app.use(morgan("tiny")); //log requests
 app.use(cors());
 
-app.get("/", (req, res) => {
-  res.send("Hello from express");
-});
+//routes
+app.use("/course", courseRouter);
 
 //server config
 const PORT = process.env.PORT || 9000;
