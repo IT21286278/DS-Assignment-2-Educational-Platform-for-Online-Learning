@@ -1,4 +1,4 @@
-import Course from "../models/Course";
+import Course from "../models/Course.js";
 import multer from "multer";
 import path from "path";
 
