@@ -12,7 +12,7 @@ const app = express();
 //middlewares
 app.use(express.json()); //Send respones in json fomrat
 app.use(morgan("tiny")); //log requests
-app.use(cors());
+app.use(cors()); //enable cors
 
 //routes
 app.use("/course", courseRouter);
