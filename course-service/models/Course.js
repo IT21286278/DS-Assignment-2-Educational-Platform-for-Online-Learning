@@ -9,8 +9,6 @@ const CourseSchema = new mongoose.Schema(
         ref: "Content",
       },
     ],
-    enrollment: [mongoose.Schema.Types.ObjectId],
-    instructor: { type: mongoose.Schema.Types.ObjectId, ref: "Instructor" },
   },
   {
     timestamps: true,

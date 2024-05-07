@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const ContentSchema = new mongoose.Schema(
   {
-    type: ["video", "quiz", "note"],
+    type: { type: String, enum: ["video", "quiz", "note"] },
     note: String,
     video: String,
     quiz: String,
-    status: ["draft", "published", "deleted"],
+    status: { type: String, enum: ["draft", "published", "deleted"] },
   },
   {
     timestamps: true,
