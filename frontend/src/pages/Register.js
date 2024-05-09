@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import ToastContext from "../context/ToastContext";
 import AuthContext from "../context/AuthContext";
+import logo from "../assets/Logo2.png";
 
 const Register = () => {
   const { toast } = useContext(ToastContext);
@@ -38,11 +39,21 @@ const Register = () => {
   };
 
   return (
-    <>
-      <h3>Create your account</h3>
-      <form onSubmit={handleSubmit}>
+    <div className='container p-4'>
+      <form
+        className='mx-auto p-5 m-5 border border-light-subtle rounded shadow w-50'
+        onSubmit={handleSubmit}
+      >
+        <div className='text-center'>
+          <img
+            className='mb-4'
+            src={logo}
+            alt='Logo'
+            style={{ maxWidth: "150px" }}
+          />
+        </div>
         <div className='form-group'>
-          <label htmlFor='inputEmail' className='form-label mt-4'>
+          <label htmlFor='inputEmail' className='form-label'>
             Email address
           </label>
           <input
@@ -53,11 +64,10 @@ const Register = () => {
             value={credentials.email}
             onChange={handleInputChange}
             aria-describedby='emailHelp'
-            placeholder='peter@example.com'
           />
         </div>
         <div className='form-group'>
-          <label htmlFor='passwordInput' className='form-label mt-4'>
+          <label htmlFor='passwordInput' className='form-label mt-2'>
             Password
           </label>
           <input
@@ -67,11 +77,10 @@ const Register = () => {
             name='password'
             value={credentials.password}
             onChange={handleInputChange}
-            placeholder='Enter Password'
           />
         </div>
         <div className='form-group'>
-          <label htmlFor='confirmPasswordInput' className='form-label mt-4'>
+          <label htmlFor='confirmPasswordInput' className='form-label mt-2'>
             Confirm Password
           </label>
           <input
@@ -81,20 +90,25 @@ const Register = () => {
             name='confirmPassword'
             value={credentials.confirmPassword}
             onChange={handleInputChange}
-            placeholder='Enter Password'
           />
         </div>
-        <button type='submit' className='btn btn-primary my-3'>
-          Register
-        </button>
-        <p>
+        <div className='text-center'>
+          <button
+            type='submit'
+            className='btn mt-4 text-white w-25'
+            style={{ backgroundColor: "#0455bf" }}
+          >
+            Register
+          </button>
+        </div>
+        <p className='text-center mt-3'>
           Already have an account ?{" "}
-          <Link to='/login' style={{ textDecoration: "none" }}>
+          <Link to='/login' style={{ color: "#0455bf" }}>
             Login
           </Link>
         </p>
       </form>
-    </>
+    </div>
   );
 };
 
