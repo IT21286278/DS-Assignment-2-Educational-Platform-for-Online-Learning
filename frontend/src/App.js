@@ -9,6 +9,9 @@ import { ToastContextProvider } from "./context/ToastContext";
 import CourseScreen from "./pages/CourseScreen";
 import CreateCompanyScreen from "./pages/CreateCompanyScreen";
 import CreateCourseScreen from "./pages/CreateCourseScreen";
+import SampleCourse from "./pages/SampleCourse";
+import Success from "./components/Success";
+import Cancel from "./components/Cancel";
 
 const App = () => {
   return (
@@ -26,6 +29,12 @@ const App = () => {
               path="/createCompanyScreen"
               element={<CreateCompanyScreen />}
             />
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/courses" element={<SampleCourse />} />
+            <Route path="/success" element={<Success />} />
+            <Route path="/cancel" element={<Cancel />} />
           </Routes>
         </Layout>
       </AuthContextProvider>

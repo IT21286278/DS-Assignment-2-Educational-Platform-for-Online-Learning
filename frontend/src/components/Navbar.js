@@ -2,16 +2,19 @@ import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import ToastContext from "../context/ToastContext";
+import Logo from "../assets/Logo2.png";
 
 const Navbar = ({ title = "LMS" }) => {
   const { toast } = useContext(ToastContext);
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
   return (
-    <nav className='navbar navbar-expand-lg bg-dark' data-bs-theme='dark'>
+    <nav className='navbar navbar-expand-lg'>
       <div className='container-fluid'>
         <Link to='./' style={{ textDecoration: "none" }}>
-          <a className='navbar-brand'>{title}</a>
+          <a className='navbar-brand'>
+            <img src={Logo} alt='logo' style={{ height: "50px" }} />
+          </a>
         </Link>
         <button
           className='navbar-toggler'

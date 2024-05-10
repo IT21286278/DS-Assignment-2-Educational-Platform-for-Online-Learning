@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import ToastContext from "../context/ToastContext";
+import logo from "../assets/Logo2.png";
 
 const Login = () => {
   const { loginUser } = useContext(AuthContext);
@@ -28,11 +29,21 @@ const Login = () => {
     loginUser(credentials);
   };
   return (
-    <>
-      <h3>Login</h3>
-      <form onSubmit={handleSubmit}>
+    <div className='container  p-4'>
+      <form
+        className='mx-auto p-5 m-5  border border-light-subtle rounded shadow w-50 '
+        onSubmit={handleSubmit}
+      >
+        <div className='text-center  '>
+          <img
+            className='mb-4'
+            src={logo}
+            alt='Logo'
+            style={{ maxWidth: "150px" }}
+          />
+        </div>
         <div className='form-group'>
-          <label htmlFor='inputEmail' className='form-label mt-4'>
+          <label htmlFor='inputEmail' className='form-label '>
             Email address
           </label>
           <input
@@ -43,11 +54,10 @@ const Login = () => {
             value={credentials.email}
             onChange={handleInputChange}
             aria-describedby='emailHelp'
-            placeholder='peter@example.com'
           />
         </div>
         <div className='form-group'>
-          <label htmlFor='passwordInput' className='form-label mt-4'>
+          <label htmlFor='passwordInput' className='form-label mt-2'>
             Password
           </label>
           <input
@@ -57,20 +67,25 @@ const Login = () => {
             name='password'
             value={credentials.password}
             onChange={handleInputChange}
-            placeholder='Enter Password'
           />
         </div>
-        <button type='submit' className='btn btn-primary my-3'>
-          Submit
-        </button>
+        <div className='text-center '>
+          <button
+            type='submit'
+            className='btn  mt-5 text-white w-25'
+            style={{ backgroundColor: "#0455bf" }}
+          >
+            Login
+          </button>
+        </div>
         <p>
           Don't have an account ?{" "}
-          <Link to='/register' style={{ textDecoration: "none" }}>
+          <Link to='/register' style={{ textDecoration: "#0455bf" }}>
             Create an account
           </Link>
         </p>
       </form>
-    </>
+    </div>
   );
 };
 
