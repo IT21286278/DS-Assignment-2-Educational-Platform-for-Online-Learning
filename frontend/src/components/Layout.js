@@ -1,9 +1,10 @@
 import Navbar from "./Navbar";
 
 const Layout = ({ children }) => {
+  const { user } = useContext(AuthContext);
   return (
     <>
-      <Navbar />
+      {user && <Navbar />}
       <div className='container mt-3'>{children}</div>
     </>
   );
