@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { connect } from "./config/db_con.js";
 import courseRouter from "./routes/course.js";
+import companyRouter from "./routes/company.js";
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(cors()); //enable cors
 
 //routes
 app.use("/course", courseRouter);
+app.use("/company", companyRouter);
 
 //server config
 const PORT = process.env.PORT || 9000;
