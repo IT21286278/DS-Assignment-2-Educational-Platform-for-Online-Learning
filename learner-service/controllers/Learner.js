@@ -108,4 +108,77 @@ const cancelEnrollment = async (req, res) => {
   }
 };
 
-export { addNewEnrollment, cancelEnrollment };
+const enrollInCourses = async (req, res) => {
+  const { courseIds } = req.body;
+  const jwtToken = req.headers.authorization;
+
+  const fetchAllCourses = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.COURSE_SERVICE_URL}/course/getAllCourses`
+      );
+      return response.data.courses;
+    } catch (error) {
+      throw new Error('Failed to fetch courses');
+    }
+  };
+
+  async function fecthUser() {
+    try {
+      const response = await axios.get(
+        `${process.env.USER_SERVICE_URL}/user/me`,
+        {
+          headers: {
+            Authorization: jwtToken,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return res.status(404).json({ error: 'User cannot be found!' });
+    }
+  }
+
+  try {
+    const Courses = await fetchAllCourses();
+    const user = await fecthUser();
+    const userId = user._id;
+    const coursesToEnroll = Courses.filter((course) =>
+      courseIds.includes(course._id.toString())
+    );
+
+    const existingEnrollments = await Enrollment.find({
+      userId: userId,
+    });
+
+    const alreadyEnrolledCourses = existingEnrollments.filter((enrollment) =>
+      coursesToEnroll.some(
+        (course) => course._id.toString() === enrollment.courseId.toString()
+      )
+    );
+
+    if (alreadyEnrolledCourses.length > 0) {
+      res.status(400).json({
+        message: `You are already enrolled in the following courses: ${alreadyEnrolledCourses.join(
+          ', '
+        )}`,
+      });
+    }
+
+    const enrollments = coursesToEnroll.map((course) => ({
+      courseId: course._id,
+      userId: userId,
+    }));
+
+    await Enrollment.insertMany(enrollments);
+
+    return res
+      .status(201)
+      .json({ message: 'Enrolled successfully', enrollments });
+  } catch (error) {
+    console.error('Failed to enroll learner:', error);
+    throw error;
+  }
+};
+
+export { addNewEnrollment, cancelEnrollment, enrollInCourses };
