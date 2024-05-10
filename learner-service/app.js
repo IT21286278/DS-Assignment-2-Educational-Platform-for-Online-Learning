@@ -1,8 +1,9 @@
-import express from "express";
-import morgan from "morgan";
-import dotenv from "dotenv";
-import cors from "cors";
-import { connect } from "./config/db_con.js";
+import express from 'express';
+import morgan from 'morgan';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import { connect } from './config/db_con.js';
+import learnerRouter from './routes/Learner.js';
 
 dotenv.config();
 
@@ -10,12 +11,10 @@ const app = express();
 
 //middlewares
 app.use(express.json()); //Send respones in json fomrat
-app.use(morgan("tiny")); //log requests
+app.use(morgan('tiny')); //log requests
 app.use(cors());
 
-app.get("/", (req, res) => {
-  res.send("Hello from express");
-});
+app.use('/enrollment', learnerRouter);
 
 //server config
 const PORT = process.env.PORT || 9000;
