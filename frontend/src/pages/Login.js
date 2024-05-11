@@ -26,53 +26,62 @@ const Login = () => {
       return;
     }
 
+    if (credentials.password.length <= 6) {
+      toast.error("Password should be more than 6 characters!");
+      return;
+    }
+    if (!credentials.email || !credentials.password) {
+      toast.error("Please enter all the required fields!");
+      return;
+    }
+
     loginUser(credentials);
   };
   return (
-    <div className='container  p-4'>
+    <div className="container  p-4">
       <form
-        className='mx-auto p-5 m-5  border border-light-subtle rounded shadow w-50 '
+        className="mx-auto p-5 m-5  border border-light-subtle rounded shadow w-50 "
         onSubmit={handleSubmit}
       >
-        <div className='text-center  '>
+        <div className="text-center  ">
           <img
-            className='mb-4'
+            className="mb-4"
             src={logo}
-            alt='Logo'
+            alt="Logo"
             style={{ maxWidth: "150px" }}
           />
         </div>
-        <div className='form-group'>
-          <label htmlFor='inputEmail' className='form-label '>
+        <div className="form-group">
+          <label htmlFor="inputEmail" className="form-label ">
             Email address
           </label>
           <input
-            type='email'
-            className='form-control'
-            id='inputEmail'
-            name='email'
+            type="email"
+            className="form-control"
+            id="inputEmail"
+            name="email"
             value={credentials.email}
             onChange={handleInputChange}
-            aria-describedby='emailHelp'
+            aria-describedby="emailHelp"
           />
         </div>
-        <div className='form-group'>
-          <label htmlFor='passwordInput' className='form-label mt-2'>
+        <div className="form-group">
+          <label htmlFor="passwordInput" className="form-label mt-2">
             Password
           </label>
           <input
-            type='password'
-            className='form-control'
-            id='passwordInput'
-            name='password'
+            type="password"
+            className="form-control"
+            id="passwordInput"
+            name="password"
             value={credentials.password}
             onChange={handleInputChange}
           />
         </div>
-        <div className='text-center '>
+        <div className="text-center ">
           <button
-            type='submit'
-            className='btn  mt-5 text-white w-25'
+            type="submit"
+            className="btn  mt-5 text-white w-25"
             style={{ backgroundColor: "#0455bf" }}
           >
             Login
@@ -80,7 +89,7 @@ const Login = () => {
         </div>
         <p>
           Don't have an account ?{" "}
-          <Link to='/register' style={{ textDecoration: "#0455bf" }}>
+          <Link to="/register" style={{ textDecoration: "#0455bf" }}>
             Create an account
           </Link>
         </p>
