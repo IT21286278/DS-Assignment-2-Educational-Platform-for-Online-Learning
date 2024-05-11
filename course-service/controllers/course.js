@@ -1,95 +1,99 @@
-import Course from '../models/Course.js';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import Content from '../models/Content.js';
-import Quiz from '../models/Quiz.js';
-import Question from '../models/Questions.js';
-
-const storageCourseImage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const dir = './courseImages';
-    fs.exists(dir, (exist) => {
-      if (!exist) {
-        return fs.mkdir(dir, (error) => cb(error, dir));
-      }
-      return cb(null, dir);
-    });
-  },
-  filename: function (req, file, cb) {
-    cb(null, 'image-' + Date.now() + path.extname(file.originalname));
-  },
-});
-
-const uploadCourseImage = multer({ storage: storageCourseImage }).single(
-  'image'
-);
+import Course from "../models/Course.js";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import Content from "../models/Content.js";
+import Quiz from "../models/Quiz.js";
+import Question from "../models/Questions.js";
+import cloudinary from "../middlewares/cloudinary.js";
+import streamifier from "streamifier";
 
 export const createCourse = async (req, res) => {
-  uploadCourseImage(req, res, async function (err) {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
+  const { title, description, category, companyId } = req.body;
 
-    const { title, description, category, companyId } = req.body;
+  if (!req.file) {
+    return res.status(400).json({ error: "No file was uploaded" });
+  }
 
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file was uploaded' });
-    }
+  try {
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
 
-    const imagePath = req.file.path;
+    const result = await cloudinary.uploader.upload(req.file.path);
+    const imagePath = result.secure_url;
 
-    try {
-      const course = new Course({
-        title,
-        description,
-        category,
-        company: companyId,
-        image: imagePath,
-      });
-      await course.save();
+    const course = new Course({
+      title,
+      description,
+      category,
+      company: companyId,
+      image: imagePath,
+    });
+    await course.save();
 
-      res.status(201).json({ course });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  });
+    res.status(201).json({ course });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 export const updateCourse = async (req, res) => {
-  uploadCourseImage(req, res, async function (err) {
-    if (err) {
-      return res.status(500).json({ error: err.message });
+  if (!req.file) {
+    return res.status(400).json({ error: "No file was uploaded" });
+  }
+
+  try {
+    const course = await Course.findById(req.body.id);
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
     }
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
 
-    const { title, description, category, companyId } = req.body;
-    console.log(req.body);
+    // Delete the existing image
+    const publicId = course.image.split("/").pop().split(".")[0];
+    await cloudinary.uploader.destroy(publicId);
 
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file was uploaded' });
-    }
+    // Upload the new image
+    const result = await cloudinary.uploader.upload(req.file.path);
+    const imagePath = result.secure_url;
 
-    const imagePath = req.file.path;
-
-    try {
-      const course = await Course.findById(req.query.id);
-      course.title = title;
-      course.description = description;
-      course.category = category;
-      course.company = companyId;
-      course.image = imagePath;
-      await course.save();
-
-      res.status(200).json({ course });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  });
+    // Update the course
+    course.title = req.body.title;
+    course.description = req.body.description;
+    course.category = req.body.category;
+    course.image = imagePath;
+    await course.save();
+    res.status(200).json({ course });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 export const deleteCourse = async (req, res) => {
+  // Delete the course and course image
   try {
-    const course = await Course.findByIdAndDelete(req.params.id);
+    const course = await Course.findById(req.params.id);
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
+
+    // Delete the existing image
+    const publicId = course.image.split("/").pop().split(".")[0];
+    await cloudinary.uploader.destroy(publicId);
+
+    await course.remove();
     res.status(200).json({ course });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -116,73 +120,59 @@ export const getAllCourses = async (req, res) => {
 
 export const getCourseWithCompany = async (req, res) => {
   try {
-    const course = await Course.findById(req.params.id).populate('company');
+    const course = await Course.findById(req.params.id).populate("company");
     res.status(200).json({ course });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const dir = './uploads';
-    fs.exists(dir, (exist) => {
-      if (!exist) {
-        return fs.mkdir(dir, (error) => cb(error, dir));
-      }
-      return cb(null, dir);
-    });
-  },
-  filename: function (req, file, cb) {
-    cb(null, 'video-' + Date.now() + path.extname(file.originalname));
-  },
-});
-
-const upload = multer({ storage: storage }).single('video');
-
 export const addContent = async (req, res) => {
-  upload(req, res, async function (err) {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-
-    const { courseId, type } = req.body;
-    let contentData = { type };
-
-    if (type === 'video') {
-      contentData.video = req.file.path;
-      saveContent(contentData, courseId, res);
-    } else if (type === 'note') {
-      contentData.note = req.body.note;
-      saveContent(contentData, courseId, res);
-    } else if (type === 'quiz') {
-      const { title, questions } = req.body;
-      const quiz = new Quiz({ title });
-      await quiz.save();
-
-      for (let i = 0; i < questions.length; i++) {
-        const question = new Question(questions[i]);
-        await question.save();
-        quiz.questions.push(question._id);
-      }
-      await quiz.save();
-      contentData.quiz = quiz._id;
-
-      saveContent(contentData, courseId, res);
-    } else {
-      res.status(400).json({ error: 'Invalid content type' });
-    }
-  });
-};
-
-const saveContent = async (contentData, courseId, res) => {
-  const content = new Content(contentData);
-  await content.save();
+  // Create a new content in cloudinary and add it to the course
+  const { title, description, courseId } = req.body;
+  if (!req.file) {
+    return res.status(400).json({ error: "No file was uploaded" });
+  }
 
   try {
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
+    const videoStream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "video",
+        // Add any additional options or transformations here
+      },
+      (error, result) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).json({ error: "Error uploading video" });
+        }
+
+        console.log("🚀 ~ addContent ~ result:", result);
+        console.log("Video uploaded:", result);
+        res.json({ success: true, result });
+      }
+    );
+
+    streamifier.createReadStream(req.file.path).pipe(videoStream);
+    const contentPath = result.secure_url;
+    console.log("🚀 ~ addContent ~ contentPath:", contentPath);
+
+    const content = new Content({
+      title,
+      description,
+      content: contentPath,
+    });
+
+    await content.save();
+
     const course = await Course.findById(courseId);
     course.content.push(content._id);
     await course.save();
+
     res.status(201).json({ course });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -191,10 +181,24 @@ const saveContent = async (contentData, courseId, res) => {
 
 export const deleteContent = async (req, res) => {
   try {
-    const course = await Course.findById(req.body.courseId);
-    course.content.pull(req.body.contentId);
+    const course = await Course.findById(req.params.courseId);
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    const content = await Content.findById(req.params.contentId);
+    if (!content) {
+      return res.status(404).json({ error: "Content not found" });
+    }
+
+    // Delete the existing content
+    const publicId = content.content.split("/").pop().split(".")[0];
+    await cloudinary.uploader.destroy(publicId);
+
+    await content.remove();
+    course.content.pull(content._id);
     await course.save();
-    await Content.findByIdAndDelete(req.body.contentId);
+
     res.status(200).json({ course });
   } catch (error) {
     res.status(500).json({ error: error.message });
