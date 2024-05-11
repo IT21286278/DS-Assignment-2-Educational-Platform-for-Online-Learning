@@ -16,3 +16,11 @@ services:
     volumes:
       - ./user-service:/app
       - /app/node_modules
+  course-service:
+    build: ./course-service
+    container_name: course_service_c
+    ports:
+      - '8001:8001'
+    volumes:
+      - ./course-service:/app
+      - /app/node_modules
