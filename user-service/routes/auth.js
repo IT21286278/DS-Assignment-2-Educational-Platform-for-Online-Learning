@@ -14,7 +14,12 @@ router.post("/register", register);
 router.post("/login", login);
 
 router.get("/me", auth, async (req, res) => {
-  return res.status(200).json({ ...req.user._doc });
+  // return res.status(200).json({ ...req.user._doc });
+  try {
+    return res.status(200).json({ ...req.user._doc });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
 });
 
 export default router;

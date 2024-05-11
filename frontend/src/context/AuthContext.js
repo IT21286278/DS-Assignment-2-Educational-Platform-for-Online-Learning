@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import ToastContext from "./ToastContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const AuthContext = createContext();
 
@@ -17,7 +18,7 @@ export const AuthContextProvider = ({ children }) => {
   //check user is logged in
   const checkUserLoggedIn = async () => {
     try {
-      const res = await fetch(`http://localhost:9000/api/me`, {
+      const res = await fetch(`http://localhost:8002/api/me`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -25,6 +26,7 @@ export const AuthContextProvider = ({ children }) => {
       });
       const result = await res.json();
       if (!result.error) {
+        setUser(result);
         if (
           location.pathname === "/login" ||
           location.pathname === "/register"
@@ -35,12 +37,12 @@ export const AuthContextProvider = ({ children }) => {
         } else {
           navigate(location.pathname ? location.pathname : "/");
         }
-        setUser(result);
       } else {
-        // navigate("/login", { replace: true });
+        navigate("/login", { replace: true });
       }
     } catch (err) {
       console.log(err);
+      navigate("/login", { replace: true });
     }
   };
   //login request
@@ -55,10 +57,9 @@ export const AuthContextProvider = ({ children }) => {
       });
       const result = await res.json();
       if (!result.error) {
+        setUser(result.user);
         toast.success("Logged in successfully");
         localStorage.setItem("token", result.jwtToken);
-        setUser(result.user);
-
         navigate("/", { replace: true });
       } else {
         toast.error(result.error);
@@ -97,3 +98,7 @@ export const AuthContextProvider = ({ children }) => {
 };
 
 export default AuthContext;
+
+AuthContextProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
