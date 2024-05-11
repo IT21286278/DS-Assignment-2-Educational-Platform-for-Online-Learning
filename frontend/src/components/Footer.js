@@ -5,7 +5,7 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 
 const Footer = () => {
   return (
-    <div className='m-0 bg-light w-100  p-1 '>
+    <div className='m-0 bg-light w-100  p-1 ' style={{ fontFamily: "poppins" }}>
       <footer className='d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top shadow-sm'>
         <div className='col-md-4 d-flex align-items-center'>
           <span className='mb-3 mb-md-0 text-body-secondary'>
