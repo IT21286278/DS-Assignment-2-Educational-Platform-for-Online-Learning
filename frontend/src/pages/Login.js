@@ -26,15 +26,6 @@ const Login = () => {
       return;
     }
 
-    if (credentials.password.length <= 6) {
-      toast.error("Password should be more than 6 characters!");
-      return;
-    }
-    if (!credentials.email || !credentials.password) {
-      toast.error("Please enter all the required fields!");
-      return;
-    }
-
     loginUser(credentials);
   };
   return (
