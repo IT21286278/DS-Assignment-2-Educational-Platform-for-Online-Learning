@@ -8,3 +8,11 @@ services:
     volumes:
       - ./learner-service:/app
       - /app/node_modules
+  user-service:
+    build: ./user-service
+    container_name: user_service_c
+    ports:
+      - '8002:8002'
+    volumes:
+      - ./user-service:/app
+      - /app/node_modules
