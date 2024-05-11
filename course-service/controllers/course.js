@@ -1,32 +1,90 @@
-import Course from "../models/Course.js";
-import multer from "multer";
-import path from "path";
-import fs from "fs";
-import Content from "../models/Content.js";
-import Quiz from "../models/Quiz.js";
-import Question from "../models/Questions.js";
+import Course from '../models/Course.js';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import Content from '../models/Content.js';
+import Quiz from '../models/Quiz.js';
+import Question from '../models/Questions.js';
+
+const storageCourseImage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const dir = './courseImages';
+    fs.exists(dir, (exist) => {
+      if (!exist) {
+        return fs.mkdir(dir, (error) => cb(error, dir));
+      }
+      return cb(null, dir);
+    });
+  },
+  filename: function (req, file, cb) {
+    cb(null, 'image-' + Date.now() + path.extname(file.originalname));
+  },
+});
+
+const uploadCourseImage = multer({ storage: storageCourseImage }).single(
+  'image'
+);
 
 export const createCourse = async (req, res) => {
-  const { title } = req.body;
-  try {
-    const course = await Course.create({ title });
-    res.status(201).json({ course });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  uploadCourseImage(req, res, async function (err) {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    const { title, description, category, companyId } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file was uploaded' });
+    }
+
+    const imagePath = req.file.path;
+
+    try {
+      const course = new Course({
+        title,
+        description,
+        category,
+        company: companyId,
+        image: imagePath,
+      });
+      await course.save();
+
+      res.status(201).json({ course });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
 };
 
-export const updateCourseTitle = async (req, res) => {
-  try {
-    const course = await Course.findByIdAndUpdate(
-      req.body.id,
-      { title: req.body.title },
-      { new: true }
-    );
-    res.status(200).json({ course });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+export const updateCourse = async (req, res) => {
+  uploadCourseImage(req, res, async function (err) {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    const { title, description, category, companyId } = req.body;
+    console.log(req.body);
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file was uploaded' });
+    }
+
+    const imagePath = req.file.path;
+
+    try {
+      const course = await Course.findById(req.query.id);
+      course.title = title;
+      course.description = description;
+      course.category = category;
+      course.company = companyId;
+      course.image = imagePath;
+      await course.save();
+
+      res.status(200).json({ course });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
 };
 
 export const deleteCourse = async (req, res) => {
@@ -56,53 +114,65 @@ export const getAllCourses = async (req, res) => {
   }
 };
 
-export const addContent = async (req, res) => {
-  const { courseId, type } = req.body;
-  let contentData = { type };
+export const getCourseWithCompany = async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.id).populate('company');
+    res.status(200).json({ course });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
-  if (type === "video") {
-    const dir = "./uploads";
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir);
-    }
-    const storage = multer.diskStorage({
-      destination: function (req, file, cb) {
-        cb(null, "uploads/");
-      },
-      filename: function (req, file, cb) {
-        cb(null, "video-" + Date.now() + path.extname(file.originalname));
-      },
-    });
-
-    const upload = multer({ storage: storage }).single("video");
-
-    upload(req, res, async function (err) {
-      if (err) {
-        return res.status(500).json({ error: err.message });
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const dir = './uploads';
+    fs.exists(dir, (exist) => {
+      if (!exist) {
+        return fs.mkdir(dir, (error) => cb(error, dir));
       }
+      return cb(null, dir);
+    });
+  },
+  filename: function (req, file, cb) {
+    cb(null, 'video-' + Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage }).single('video');
+
+export const addContent = async (req, res) => {
+  upload(req, res, async function (err) {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    const { courseId, type } = req.body;
+    let contentData = { type };
+
+    if (type === 'video') {
       contentData.video = req.file.path;
       saveContent(contentData, courseId, res);
-    });
-  } else if (type === "note") {
-    contentData.note = req.body.note;
-    saveContent(contentData, courseId, res);
-  } else if (type === "quiz") {
-    const { title, questions } = req.body;
-    const quiz = new Quiz({ title });
-    await quiz.save();
+    } else if (type === 'note') {
+      contentData.note = req.body.note;
+      saveContent(contentData, courseId, res);
+    } else if (type === 'quiz') {
+      const { title, questions } = req.body;
+      const quiz = new Quiz({ title });
+      await quiz.save();
 
-    for (let i = 0; i < questions.length; i++) {
-      const question = new Question(questions[i]);
-      await question.save();
-      quiz.questions.push(question._id);
+      for (let i = 0; i < questions.length; i++) {
+        const question = new Question(questions[i]);
+        await question.save();
+        quiz.questions.push(question._id);
+      }
+      await quiz.save();
+      contentData.quiz = quiz._id;
+
+      saveContent(contentData, courseId, res);
+    } else {
+      res.status(400).json({ error: 'Invalid content type' });
     }
-    await quiz.save();
-    contentData.quiz = quiz._id;
-
-    saveContent(contentData, courseId, res);
-  } else {
-    res.status(400).json({ error: "Invalid content type" });
-  }
+  });
 };
 
 const saveContent = async (contentData, courseId, res) => {

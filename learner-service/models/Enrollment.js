@@ -2,9 +2,9 @@ import mongoose from 'mongoose';
 
 const EnrollmentSchema = new mongoose.Schema(
   {
-    learnerId: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Learner',
+      ref: 'users',
     },
     courseId: {
       type: mongoose.Schema.Types.ObjectId,
