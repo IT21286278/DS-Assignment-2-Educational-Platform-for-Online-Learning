@@ -12,6 +12,7 @@ import CreateCourseScreen from "./pages/CreateCourseScreen";
 import SampleCourse from "./pages/SampleCourse";
 import Success from "./components/Success";
 import Cancel from "./components/Cancel";
+import Profile from "./pages/Profile";
 
 const App = () => {
   return (
@@ -19,22 +20,23 @@ const App = () => {
       <AuthContextProvider>
         <Layout>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/getCourses" element={<CourseScreen />} />
-            <Route path="/createCourses" element={<CreateCourseScreen />} />
-            <Route path="*" element={<Home />} />
+            <Route path='/' element={<Home />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register />} />
+            <Route path='/getCourses' element={<CourseScreen />} />
+            <Route path='/createCourses' element={<CreateCourseScreen />} />
+            <Route path='*' element={<Home />} />
             <Route
-              path="/createCompanyScreen"
+              path='/createCompanyScreen'
               element={<CreateCompanyScreen />}
             />
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/courses" element={<SampleCourse />} />
-            <Route path="/success" element={<Success />} />
-            <Route path="/cancel" element={<Cancel />} />
+            <Route path='/' element={<Home />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register />} />
+            <Route path='/courses' element={<SampleCourse />} />
+            <Route path='/success' element={<Success />} />
+            <Route path='/cancel' element={<Cancel />} />
+            <Route path='/profile' element={<Profile />} />
           </Routes>
         </Layout>
       </AuthContextProvider>

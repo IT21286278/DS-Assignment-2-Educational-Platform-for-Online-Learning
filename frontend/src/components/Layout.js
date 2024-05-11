@@ -7,10 +7,14 @@ const Layout = ({ children }) => {
   const { user } = useContext(AuthContext);
   return (
     <>
-      {user && <Navbar />}
-      {/* <div className='container mt-3'> */}
-      <main>{children}</main>
-      {/* </div> */}
+      {user && (
+        <div style={{ marginBottom: "100px" }}>
+          <Navbar />
+        </div>
+      )}
+      <div className='container' style={{ fontFamily: "poppins" }}>
+        {children}
+      </div>
       {user && <Footer />}
     </>
   );

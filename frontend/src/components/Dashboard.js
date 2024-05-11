@@ -19,7 +19,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className='container w-50  my-5 rounded border'>
+    <div className='container w-50  my-2 rounded border'>
       <Slider {...settings}>
         <div className='h-100 w-100'>
           <img src={dash1} alt='Image 1' className='h-100 w-100' />

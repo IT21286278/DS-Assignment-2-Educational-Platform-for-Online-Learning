@@ -6,17 +6,10 @@ import Logo from "../assets/Logo2.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 
-const Navbar = ({ title = "LMS" }) => {
+const Navbar = () => {
   const { toast } = useContext(ToastContext);
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.clear();
-    toast.success("Logged out successfully!");
-    navigate("/login", { replace: true });
-  };
 
   useEffect(() => {
     !user && navigate("/login", { replace: true });
@@ -24,8 +17,8 @@ const Navbar = ({ title = "LMS" }) => {
 
   return (
     <nav
-      className='navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-lg'
-      // style={{ background: "#e3f2fd" }}
+      className='navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-lg '
+      style={{ fontFamily: "poppins" }}
     >
       <div className='container-fluid'>
         <Link to='./' style={{ textDecoration: "none" }}>
@@ -100,7 +93,7 @@ const Navbar = ({ title = "LMS" }) => {
               </Link>
             </li>
             <li className='nav-item'>
-              <Link to='./' style={{ textDecoration: "none" }}>
+              <Link to='/profile' style={{ textDecoration: "none" }}>
                 <a className='nav-link'>
                   <AccountCircleIcon />
                 </a>

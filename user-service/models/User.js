@@ -6,15 +6,12 @@ const UserModel = new mongoose.Schema({
     required: true,
     max: 50,
     unique: true,
-
     required: [true, "email is required"],
   },
-
   password: {
     type: String,
     required: [true, "password is required"],
   },
-
   role: {
     type: String,
     enum: ["Learner", "Instructor", "Admin"],
