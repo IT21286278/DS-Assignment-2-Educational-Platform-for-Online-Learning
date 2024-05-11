@@ -24,3 +24,11 @@ services:
     volumes:
       - ./course-service:/app
       - /app/node_modules
+  gateway-service:
+    build: ./gateway-service
+    container_name: gateway_service_c
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./gateway-service:/app
+      - /app/node_modules
