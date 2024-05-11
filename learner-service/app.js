@@ -16,7 +16,7 @@ app.use(cors());
 
 app.use('/enrollment', learnerRouter);
 
-//server config
+//server configuration
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, async () => {
   try {
