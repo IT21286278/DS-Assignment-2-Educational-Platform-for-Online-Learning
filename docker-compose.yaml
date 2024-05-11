@@ -24,11 +24,19 @@ services:
     volumes:
       - ./course-service:/app
       - /app/node_modules
-  gateway-service:
-    build: ./gateway-service
-    container_name: gateway_service_c
+  gateway:
+    build: ./gateway
+    container_name: gateway_c
     ports:
       - '8000:8000'
     volumes:
-      - ./gateway-service:/app
+      - ./gateway:/app
+      - /app/node_modules
+  payment-service:
+    build: ./payment-service
+    container_name: payment_service_c
+    ports:
+      - '8004:8004'
+    volumes:
+      - ./payment-service:/app
       - /app/node_modules
