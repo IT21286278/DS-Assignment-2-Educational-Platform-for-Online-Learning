@@ -158,7 +158,7 @@ const enrollInCourses = async (req, res) => {
     );
 
     if (alreadyEnrolledCourses.length > 0) {
-      res.status(400).json({
+      return res.status(400).json({
         message: `You are already enrolled in the following courses: ${alreadyEnrolledCourses.join(
           ', '
         )}`,
