@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  learner-service:
+    build: ./learner-service
+    container_name: learner_service_c
+    ports:
+      - '8003:8003'
+    volumes:
+      - ./learner-service:/app
+      - /app/node_modules
