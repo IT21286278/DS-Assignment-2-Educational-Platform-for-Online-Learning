@@ -15,6 +15,7 @@ const CourseContent = () => {
   const [course, setCourse] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(1); // Change this value to adjust the number of items per page
+  const [selectedAnswers, setSelectedAnswers] = useState({});
 
   useEffect(() => {
     handleCourseClick();
@@ -25,6 +26,7 @@ const CourseContent = () => {
       `http://localhost:8001/course/getCourseById/${selectedCourseId}`
     );
     const response = await data.json();
+    console.log("🚀 ~ handleCourseClick ~ response:", response);
 
     // Sort the content based on the order attribute
     const sortedContent = response.course.content.sort(
@@ -38,15 +40,17 @@ const CourseContent = () => {
     });
   };
 
-  // Logic to calculate index of the last item on the current page
   const indexOfLastItem = currentPage * itemsPerPage;
-  // Logic to calculate index of the first item on the current page
+
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  // Logic to get the current items to display
+
   const currentItems = course?.content.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Logic to paginate
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handleAnswerChange = (questionIndex, optionId) => {
+    setSelectedAnswers((prev) => ({ ...prev, [questionIndex]: optionId }));
+  };
 
   return (
     <Container>
@@ -61,7 +65,7 @@ const CourseContent = () => {
                   return (
                     <Card key={index} className='mb-3'>
                       <Card.Body>
-                        <Card.Text>{item.note}</Card.Text>
+                        <div dangerouslySetInnerHTML={{ __html: item.note }} />
                       </Card.Body>
                     </Card>
                   );
@@ -92,6 +96,17 @@ const CourseContent = () => {
                                 label={option.option}
                                 name={`question-${qIndex}`}
                                 key={oIndex}
+                                onChange={() =>
+                                  handleAnswerChange(qIndex, option._id)
+                                }
+                                style={{
+                                  color:
+                                    selectedAnswers[qIndex] === option._id
+                                      ? option.isCorrect
+                                        ? "green"
+                                        : "red"
+                                      : "black",
+                                }}
                               />
                             ))}
                           </Form.Group>

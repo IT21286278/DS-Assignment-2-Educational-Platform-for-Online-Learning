@@ -10,6 +10,7 @@ const CourseSchema = new mongoose.Schema(
       ref: "Company",
     },
     image: String,
+    price: Number,
     content: [
       {
         type: mongoose.Schema.Types.ObjectId,
