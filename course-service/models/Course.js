@@ -11,6 +11,7 @@ const CourseSchema = new mongoose.Schema(
     },
     image: String,
     price: Number,
+    stripeProductId: String,
     content: [
       {
         type: mongoose.Schema.Types.ObjectId,
