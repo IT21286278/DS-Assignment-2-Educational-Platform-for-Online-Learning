@@ -115,7 +115,20 @@ const Navbar = () => {
                   <Link to="./addContent" style={{ textDecoration: "none" }}>
                     <p className="nav-item ">
                       <button className=" btn btn-primary btn-sm btn text-nowrap">
-                        Create Quiz
+                        Add Content
+                      </button>
+                    </p>
+                  </Link>
+                </li>
+
+                <li className="nav-item">
+                  <Link
+                    to="./companyCourses"
+                    style={{ textDecoration: "none" }}
+                  >
+                    <p className="nav-item ">
+                      <button className=" btn btn-primary btn-sm btn text-nowrap">
+                        My Courses
                       </button>
                     </p>
                   </Link>

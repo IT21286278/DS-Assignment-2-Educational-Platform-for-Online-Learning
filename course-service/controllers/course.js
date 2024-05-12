@@ -3,6 +3,7 @@ import Content from "../models/Content.js";
 import Course from "../models/Course.js";
 import Question from "../models/Questions.js";
 import Quiz from "../models/Quiz.js";
+import axios from "axios";
 
 export const createCourse = async (req, res) => {
   const { title, description, category, company, image, price } = req.body;
@@ -19,12 +20,23 @@ export const createCourse = async (req, res) => {
   }
 
   try {
+    // Create a product in Stripe
+    const { data: stripeProduct } = await axios.post(
+      "http://localhost:8003/create-product",
+      {
+        name: title,
+        price: price * 100, // Stripe expects the price in cents
+      }
+    );
+
     const course = new Course({
       title,
       description,
       category,
       company,
       image,
+      price,
+      stripeProductId: stripeProduct.id, // Store the Stripe product ID
     });
     await course.save();
 
