@@ -17,6 +17,7 @@ function Profile() {
     navigate("/login", { replace: true });
   };
 
+   // Inline styles for background and text
   const bgStyle = {
     backgroundColor: '#f0f0f0', 
     color: '#333', 
