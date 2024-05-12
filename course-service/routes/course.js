@@ -8,6 +8,7 @@ import {
   updateCourse,
   getCourseWithCompany,
   getCourseById,
+  getCourseNameAndId,
 } from "../controllers/course.js";
 import upload from "../middlewares/multer.js";
 
@@ -21,5 +22,6 @@ router.get("/getAllCourses", getAllCourses);
 router.post("/addContent", upload.single("video"), addContent);
 router.get("/getCourseWithCompany/:id", getCourseWithCompany);
 router.get("/getCourseById/:id", getCourseById);
+router.get("/getCourseNameAndId", getCourseNameAndId);
 
 export default router;

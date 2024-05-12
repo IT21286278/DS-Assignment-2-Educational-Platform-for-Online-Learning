@@ -112,7 +112,7 @@ const Navbar = () => {
                 </li>
 
                 <li className="nav-item">
-                  <Link to="./createQuiz" style={{ textDecoration: "none" }}>
+                  <Link to="./addContent" style={{ textDecoration: "none" }}>
                     <p className="nav-item ">
                       <button className=" btn btn-primary btn-sm btn text-nowrap">
                         Create Quiz
