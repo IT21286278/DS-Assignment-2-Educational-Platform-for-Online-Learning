@@ -12,9 +12,15 @@ const EnrollmentSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Pending', 'Approved', 'Rejected', 'Cancelled'],
+      enum: ['Pending', 'Approved', 'Rejected', 'Cancelled', 'Completed'],
       default: 'Pending',
     },
+    coveredContent: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Content',
+      },
+    ],
   },
   {
     timestamps: true,
