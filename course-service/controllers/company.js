@@ -83,3 +83,15 @@ export const getAllCompanies = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const getCompanyNames = async (req, res) => {
+  try {
+    // Error fetching companies Error: Invalid select: select only takes 1 argument
+    const companies = await Company.find().select("name");
+
+    res.status(200).json({ companies });
+  } catch (error) {
+    console.error("Error fetching companies", error);
+    res.status(500).json({ error: error.message });
+  }
+};

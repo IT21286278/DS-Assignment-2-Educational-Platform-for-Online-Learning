@@ -9,28 +9,25 @@ import cloudinary from "../middlewares/cloudinary.js";
 import streamifier from "streamifier";
 
 export const createCourse = async (req, res) => {
-  const { title, description, category, companyId } = req.body;
+  const { title, description, category, company, image } = req.body;
 
-  if (!req.file) {
-    return res.status(400).json({ error: "No file was uploaded" });
+  if (
+    title === "" ||
+    description === "" ||
+    category === "" ||
+    company === "" ||
+    image === ""
+  ) {
+    return res.status(400).json({ error: "All fields are required" });
   }
 
   try {
-    cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-    });
-
-    const result = await cloudinary.uploader.upload(req.file.path);
-    const imagePath = result.secure_url;
-
     const course = new Course({
       title,
       description,
       category,
-      company: companyId,
-      image: imagePath,
+      company,
+      image,
     });
     await course.save();
 
@@ -108,10 +105,14 @@ export const getCourse = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
+//
 export const getAllCourses = async (req, res) => {
   try {
-    const courses = await Course.find();
+    const courses = await Course.find().populate(
+      "company",
+      "-description -status"
+    );
+
     res.status(200).json({ courses });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -128,44 +129,23 @@ export const getCourseWithCompany = async (req, res) => {
 };
 
 export const addContent = async (req, res) => {
-  // Create a new content in cloudinary and add it to the course
-  const { title, description, courseId } = req.body;
-  if (!req.file) {
-    return res.status(400).json({ error: "No file was uploaded" });
-  }
-
   try {
-    cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-    });
-    const videoStream = cloudinary.uploader.upload_stream(
-      {
-        resource_type: "video",
-        // Add any additional options or transformations here
-      },
-      (error, result) => {
-        if (error) {
-          console.error(error);
-          return res.status(500).json({ error: "Error uploading video" });
-        }
+    const { note, video, quiz, courseId, type, status } = req.body;
 
-        console.log("🚀 ~ addContent ~ result:", result);
-        console.log("Video uploaded:", result);
-        res.json({ success: true, result });
-      }
-    );
+    if (type === "" || status === "") {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+    const content = new Content();
 
-    streamifier.createReadStream(req.file.path).pipe(videoStream);
-    const contentPath = result.secure_url;
-    console.log("🚀 ~ addContent ~ contentPath:", contentPath);
-
-    const content = new Content({
-      title,
-      description,
-      content: contentPath,
-    });
+    if (type === "video") {
+      content.video = video;
+    } else if (type === "note") {
+      content.note = note;
+    } else {
+      content.quiz = quiz;
+    }
+    content.type = type;
+    content.status = status;
 
     await content.save();
 
