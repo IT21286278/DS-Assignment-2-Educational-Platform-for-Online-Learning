@@ -8,8 +8,11 @@ import {
   updateCourse,
   getCourseWithCompany,
   getCourseById,
+  getCourseNameAndId,
+  getCourseByUserId,
 } from "../controllers/course.js";
 import upload from "../middlewares/multer.js";
+// import { fetchUser } from "../utils/fetchUser.js";
 
 const router = express.Router();
 
@@ -21,5 +24,11 @@ router.get("/getAllCourses", getAllCourses);
 router.post("/addContent", upload.single("video"), addContent);
 router.get("/getCourseWithCompany/:id", getCourseWithCompany);
 router.get("/getCourseById/:id", getCourseById);
+router.get("/getCourseNameAndId", getCourseNameAndId);
+router.get("/getCourseByUserId", getCourseByUserId);
+
+// router.get("/test", fetchUser, (req, res) => {
+//   res.status(200).json({ user: req.user });
+// });
 
 export default router;

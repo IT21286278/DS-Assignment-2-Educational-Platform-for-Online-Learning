@@ -10,6 +10,7 @@ const CreateCourseScreen = () => {
     description: "",
     category: "",
     company: "",
+    price: "",
   });
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -45,6 +46,7 @@ const CreateCourseScreen = () => {
       !courseData.description ||
       !courseData.category ||
       !courseData.company ||
+      !courseData.price ||
       !image
     ) {
       setError("Please fill in all fields");
@@ -193,6 +195,20 @@ const CreateCourseScreen = () => {
             style={{ maxWidth: "100px" }}
           />
         )}
+        <div className='mb-3'>
+          <label htmlFor='price' className='form-label'>
+            Price
+          </label>
+          <input
+            type='number'
+            className='form-control'
+            id='price'
+            placeholder='Enter course price'
+            name='price'
+            onChange={(e) => handleChange(e)}
+            value={courseData.price}
+          />
+        </div>
 
         <div className='d-flex justify-content-center'>
           <button

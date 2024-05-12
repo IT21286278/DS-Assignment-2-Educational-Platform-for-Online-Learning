@@ -1,19 +1,21 @@
-import express from 'express';
-import cors from 'cors';
-import stripe from 'stripe';
-import dotenv from 'dotenv';
-import { connect } from './config/db_con.js';
+import express from "express";
+import cors from "cors";
+import stripe from "stripe";
+import dotenv from "dotenv";
+import { connect } from "./config/db_con.js";
+import morgan from "morgan";
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
-app.use(express.static('public'));
+app.use(express.static("public"));
 app.use(express.json());
+app.use(morgan("tiny"));
 
 const stripeClient = stripe(process.env.STRIPE_KEY);
 
-app.post('/checkout', async (req, res) => {
+app.post("/checkout", async (req, res) => {
   console.log(req.body);
 
   const courses = req.body.courses;
@@ -24,18 +26,40 @@ app.post('/checkout', async (req, res) => {
 
   const session = await stripeClient.checkout.sessions.create({
     line_items: courseItems,
-    mode: 'payment',
-    success_url: 'http://localhost:3000/success',
-    cancel_url: 'http://localhost:3000/cancel',
+    mode: "payment",
+    success_url: "http://localhost:3000/success",
+    cancel_url: "http://localhost:3000/cancel",
   });
 
   res.send(JSON.stringify({ url: session.url }));
 });
 
+app.post("/create-product", async (req, res) => {
+  const { name, price } = req.body;
+
+  try {
+    const product = await stripeClient.products.create({
+      name: name,
+      default_price_data: {
+        unit_amount: price,
+        currency: "lkr",
+        recurring: {
+          interval: "month",
+        },
+      },
+      expand: ["default_price"],
+    });
+
+    res.status(201).json(product);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, async () => {
   try {
-    await connect();
+    // await connect();
     console.log(`Payment service is running on port ${PORT}`);
   } catch (err) {
     console.log(err);
