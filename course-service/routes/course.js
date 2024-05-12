@@ -9,9 +9,10 @@ import {
   getCourseWithCompany,
   getCourseById,
   getCourseNameAndId,
-  getCourseByCompany,
+  getCourseByUserId,
 } from "../controllers/course.js";
 import upload from "../middlewares/multer.js";
+// import { fetchUser } from "../utils/fetchUser.js";
 
 const router = express.Router();
 
@@ -24,6 +25,10 @@ router.post("/addContent", upload.single("video"), addContent);
 router.get("/getCourseWithCompany/:id", getCourseWithCompany);
 router.get("/getCourseById/:id", getCourseById);
 router.get("/getCourseNameAndId", getCourseNameAndId);
-router.get("/getCourseByCompany/:id", getCourseByCompany);
+router.get("/getCourseByUserId", getCourseByUserId);
+
+// router.get("/test", fetchUser, (req, res) => {
+//   res.status(200).json({ user: req.user });
+// });
 
 export default router;
