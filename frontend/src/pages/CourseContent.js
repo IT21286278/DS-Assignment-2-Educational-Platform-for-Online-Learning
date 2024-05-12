@@ -1,10 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
 import CommonContext from "../context/CommonContext";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Pagination,
+  Form,
+} from "react-bootstrap";
 
 const CourseContent = () => {
   const { selectedCourseId } = useContext(CommonContext);
   const [course, setCourse] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(1); // Change this value to adjust the number of items per page
 
   useEffect(() => {
     handleCourseClick();
@@ -28,6 +38,16 @@ const CourseContent = () => {
     });
   };
 
+  // Logic to calculate index of the last item on the current page
+  const indexOfLastItem = currentPage * itemsPerPage;
+  // Logic to calculate index of the first item on the current page
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  // Logic to get the current items to display
+  const currentItems = course?.content.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Logic to paginate
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <Container>
       {course && (
@@ -35,12 +55,11 @@ const CourseContent = () => {
           <Col md={8}>
             <h2>{course.title}</h2>
             <p>{course.description}</p>
-            <img src={course.image} alt={course.title} className="img-fluid" />
-            {course.content.map((item, index) => {
+            {currentItems.map((item, index) => {
               switch (item.type) {
                 case "note":
                   return (
-                    <Card key={index} className="mb-3">
+                    <Card key={index} className='mb-3'>
                       <Card.Body>
                         <Card.Text>{item.note}</Card.Text>
                       </Card.Body>
@@ -48,30 +67,34 @@ const CourseContent = () => {
                   );
                 case "video":
                   return (
-                    <Card key={index} className="mb-3">
+                    <Card key={index} className='mb-3'>
                       <Card.Body>
                         <video
                           controls
                           src={item.video}
-                          className="img-fluid"
+                          className='img-fluid'
                         />
                       </Card.Body>
                     </Card>
                   );
                 case "quiz":
                   return (
-                    <Card key={index} className="mb-3">
+                    <Card key={index} className='mb-3'>
                       <Card.Body>
                         <Card.Title>{item.quiz.title}</Card.Title>
                         {item.quiz.questions.map((question, qIndex) => (
-                          <div key={qIndex}>
-                            <p>{question.question}</p>
+                          <Form.Group key={qIndex}>
+                            <Form.Label>{question.question}</Form.Label>
                             {question.options.map((option, oIndex) => (
-                              <Button variant="outline-primary" key={oIndex}>
-                                {option.option}
-                              </Button>
+                              <Form.Check
+                                type='radio'
+                                id={`option-${qIndex}-${oIndex}`}
+                                label={option.option}
+                                name={`question-${qIndex}`}
+                                key={oIndex}
+                              />
                             ))}
-                          </div>
+                          </Form.Group>
                         ))}
                       </Card.Body>
                     </Card>
@@ -80,10 +103,27 @@ const CourseContent = () => {
                   return null;
               }
             })}
+
+            <Pagination className='justify-content-center'>
+              {course.content.map((_, index) => (
+                <Pagination.Item
+                  key={index}
+                  active={index + 1 === currentPage}
+                  onClick={() => paginate(index + 1)}
+                  style={{
+                    cursor: "pointer",
+                    userSelect: "none",
+                    outline: "none",
+                  }}
+                >
+                  {index + 1}
+                </Pagination.Item>
+              ))}
+            </Pagination>
           </Col>
           <Col md={4}>
-            <Card>
-              <Card.Img variant="top" src={course.company.logo} />
+            <Card style={{ marginTop: "85px" }}>
+              <Card.Img variant='top' src={course.company.logo} />
               <Card.Body>
                 <Card.Title>{course.company.name}</Card.Title>
                 <Card.Text>{course.company.description}</Card.Text>

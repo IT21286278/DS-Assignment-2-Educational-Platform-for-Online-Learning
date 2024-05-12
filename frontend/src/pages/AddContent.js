@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import UploadWidget from "../components/UploadWidget";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
+import ToastContext from "../context/ToastContext";
 
 const AddContent = ({ courseId = "6640b441402a704e0c62c0ef" }) => {
+  const { toast } = useContext(ToastContext);
+
   const [content, setContent] = useState({
     type: "note",
     note: "",
@@ -89,6 +92,7 @@ const AddContent = ({ courseId = "6640b441402a704e0c62c0ef" }) => {
         setError(data.error);
       } else {
         setError("");
+        toast.success("Content added successfully!");
         clearAllDetails();
       }
     } catch (error) {
@@ -157,9 +161,6 @@ const AddContent = ({ courseId = "6640b441402a704e0c62c0ef" }) => {
         )}
         {content.type === "quiz" && (
           <div className='mb-3'>
-            <label htmlFor='quiz' className='form-label'>
-              Quiz
-            </label>
             <label htmlFor='title' className='form-label'>
               Quiz Title
             </label>
@@ -167,20 +168,26 @@ const AddContent = ({ courseId = "6640b441402a704e0c62c0ef" }) => {
               type='text'
               className='form-control'
               id='title'
-              placeholder='Enter quiz title'
+              placeholder='Enter quiz title here...'
               value={quiz.title}
               onChange={(e) => setQuiz({ ...quiz, title: e.target.value })}
             />
             <label htmlFor='questions' className='form-label'>
-              Questions
+              Questions and Options (Select the correct answer)
             </label>
             {quiz.questions.map((q, questionIndex) => (
               <div key={questionIndex}>
+                <label
+                  htmlFor={`question-${questionIndex}`}
+                  className='form-label'
+                >
+                  Question {questionIndex + 1}
+                </label>
                 <input
                   type='text'
-                  className='form-control'
+                  className='form-control mb-2'
                   id={`question-${questionIndex}`}
-                  placeholder='Enter question'
+                  placeholder='Enter question here...'
                   value={q.question}
                   onChange={(e) => handleQuestionChange(e, questionIndex)}
                 />
@@ -188,9 +195,9 @@ const AddContent = ({ courseId = "6640b441402a704e0c62c0ef" }) => {
                   <div key={optionIndex}>
                     <input
                       type='text'
-                      className='form-control'
+                      className='form-control  ms-3 w-75'
                       id={`option-${questionIndex}-${optionIndex}`}
-                      placeholder='Enter option'
+                      placeholder={"Enter option " + (optionIndex + 1)}
                       value={o.option}
                       onChange={(e) =>
                         handleOptionChange(e, questionIndex, optionIndex)
@@ -198,7 +205,7 @@ const AddContent = ({ courseId = "6640b441402a704e0c62c0ef" }) => {
                     />
                     <input
                       type='checkbox'
-                      className='form-check-input'
+                      className='form-check-input ms-3 mb-2 me-3'
                       id={`isCorrect-${questionIndex}-${optionIndex}`}
                       checked={o.isCorrect}
                       onChange={(e) =>
@@ -209,7 +216,7 @@ const AddContent = ({ courseId = "6640b441402a704e0c62c0ef" }) => {
                       className='form-check-label'
                       htmlFor={`isCorrect-${questionIndex}-${optionIndex}`}
                     >
-                      Is Correct
+                      Correct Answer {optionIndex + 1}
                     </label>
                   </div>
                 ))}
