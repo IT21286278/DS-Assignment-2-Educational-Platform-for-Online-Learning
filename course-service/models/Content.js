@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const ContentSchema = new mongoose.Schema(
   {
+    order: Number,
     type: { type: String, enum: ["video", "quiz", "note"] },
     note: String,
     video: String,
