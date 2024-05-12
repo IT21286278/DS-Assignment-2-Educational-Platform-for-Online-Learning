@@ -13,33 +13,38 @@ import Success from "./components/Success";
 import Cancel from "./components/Cancel";
 import Profile from "./pages/Profile";
 import AddContent from "./pages/AddContent";
+import CourseContent from "./pages/CourseContent";
+import { CommonContextProvider } from "./context/CommonContext";
 
 const App = () => {
   return (
     <ToastContextProvider>
-      <AuthContextProvider>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/createCourses" element={<CreateCourseScreen />} />
-            <Route path="*" element={<Home />} />
-            <Route
-              path="/createCompanyScreen"
-              element={<CreateCompanyScreen />}
-            />
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/courses" element={<SampleCourse />} />
-            <Route path="/success" element={<Success />} />
-            <Route path="/cancel" element={<Cancel />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/addContent" element={<AddContent />} />
-          </Routes>
-        </Layout>
-      </AuthContextProvider>
+      <CommonContextProvider>
+        <AuthContextProvider>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/createCourses" element={<CreateCourseScreen />} />
+              <Route path="*" element={<Home />} />
+              <Route
+                path="/createCompanyScreen"
+                element={<CreateCompanyScreen />}
+              />
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/courses" element={<SampleCourse />} />
+              <Route path="/success" element={<Success />} />
+              <Route path="/cancel" element={<Cancel />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/addContent" element={<AddContent />} />
+              <Route path="/courseContent" element={<CourseContent />} />
+            </Routes>
+          </Layout>
+        </AuthContextProvider>
+      </CommonContextProvider>
     </ToastContextProvider>
   );
 };

@@ -1,8 +1,16 @@
 import React from "react";
 
-const CourseCard = ({ title, image, price, company, description }) => {
+const CourseCard = ({
+  title,
+  image,
+  price,
+  company,
+  description,
+  onclickCourse,
+  _id,
+}) => {
   return (
-    <div className="card">
+    <div className="card" onClick={() => onclickCourse(_id)}>
       <img src={image} className="card-img-top" alt={title} />
       <div className="card-body">
         <h5 className="card-title">{title}</h5>

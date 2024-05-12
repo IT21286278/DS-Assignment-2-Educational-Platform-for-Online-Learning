@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import Dashboard from "../components/Dashboard";
 import CourseCard from "../components/CourseCard";
+import CommonContext from "../context/CommonContext";
 
 const Home = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+  const { setSelectedCourseId } = useContext(CommonContext);
 
   useEffect(() => {
     !user && navigate("/login", { replace: true });
@@ -81,6 +83,11 @@ const Home = () => {
     };
     fetchCourses();
   }, []);
+  const onclickCourse = (course) => {
+    console.log(course);
+    setSelectedCourseId(course);
+    navigate("/courseContent");
+  };
 
   return (
     <div>
@@ -92,7 +99,7 @@ const Home = () => {
         <div className="row">
           {courses.map((course, index) => (
             <div className="col-md-4 mb-4" key={index}>
-              <CourseCard {...course} />
+              <CourseCard {...course} onclickCourse={onclickCourse} />
             </div>
           ))}
         </div>
