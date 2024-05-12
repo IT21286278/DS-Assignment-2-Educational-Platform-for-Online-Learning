@@ -48,3 +48,10 @@ services:
     volumes:
       - ./notification-service:/app
       - /app/node_modules
+  frontend:
+    build: ./frontend
+    container_name: frontend_c
+    ports:
+      - '3000:3000'
+    stdin_open: true
+    tty: true
