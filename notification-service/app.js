@@ -7,35 +7,7 @@ import nodemailer from 'nodemailer'; // Import nodemailer module
 
 dotenv.config();
 
-// Define sendTimetableNotification function
-const sendTimetableNotification = async (studentEmails, subject, message) => {
-  // Create a nodemailer transporter
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.USER,
-      pass: process.env.PASSWORD,
-    },
-  });
 
-  // Iterate over student emails and send an email to each student
-  for (const email of studentEmails) {
-    // Compose the email message
-    const mailOptions = {
-      from: process.env.USER, // Set from address
-      to: email,
-      subject: subject,
-      text: message,
-    };
-
-    try {
-      await transporter.sendMail(mailOptions);
-      console.log('Email sent successfully to:', email);
-    } catch (err) {
-      console.log('Error sending email', err);
-    }
-  }
-};
 
 const app = express();
 
@@ -68,6 +40,36 @@ app.post('/send-notification', async (req, res) => {
     res.status(500).send('Error sending notification.');
   }
 });
+
+// Define sendTimetableNotification function
+const sendTimetableNotification = async (studentEmails, subject, message) => {
+  // Create a nodemailer transporter
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.USER,
+      pass: process.env.PASSWORD,
+    },
+  });
+
+  // Iterate over student emails and send an email to each student
+  for (const email of studentEmails) {
+    // Compose the email message
+    const mailOptions = {
+      from: process.env.USER, // Set from address
+      to: email,
+      subject: subject,
+      text: message,
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log('Email sent successfully to:', email);
+    } catch (err) {
+      console.log('Error sending email', err);
+    }
+  }
+}; 
 
 //server config
 const PORT = process.env.PORT || 9000;
