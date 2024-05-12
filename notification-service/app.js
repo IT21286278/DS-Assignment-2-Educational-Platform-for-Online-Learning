@@ -6,9 +6,6 @@ import { connect } from './config/db_con.js';
 import nodemailer from 'nodemailer'; // Import nodemailer module
 
 dotenv.config();
-
-
-
 const app = express();
 
 //middlewares
@@ -70,8 +67,6 @@ app.post('/send-notification', async (req, res) => {
     res.status(500).send('Error sending notification.');
   }
 });
-
-
 
 //server config
 const PORT = process.env.PORT || 9000;
