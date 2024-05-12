@@ -17,14 +17,19 @@ const CourseCard = ({
         {/* <p className="card-text">Price: {price}</p> */}
         {company && (
           <>
-            <p className="card-text">{company.name}</p>
-            <div style={{ height: "20px" }}>
-              <img src={company.logo} alt={title} className="img-fluid h-20 " />
+            <div className='d-flex justify-content-start'>
+              <div style={{ height: "25px", width: "25px", margin: "0px" }}>
+                <img
+                  src={company.logo}
+                  alt={title}
+                  className='img-fluid rounded-circle me-3'
+                />
+              </div>
+              <p className='card-text'>{company.name}</p>
             </div>
           </>
         )}
-        <p className="card-text">{description}</p>
-        <button className="btn btn-primary">Enroll</button>
+        <p className='card-text'>{description}</p>
       </div>
     </div>
   );
