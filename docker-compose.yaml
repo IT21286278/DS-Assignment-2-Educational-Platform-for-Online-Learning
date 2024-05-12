@@ -40,3 +40,11 @@ services:
     volumes:
       - ./payment-service:/app
       - /app/node_modules
+  notification-service:
+    build: ./notification-service
+    container_name: notification_service_c
+    ports:
+      - '8005:8005'
+    volumes:
+      - ./notification-service:/app
+      - /app/node_modules
