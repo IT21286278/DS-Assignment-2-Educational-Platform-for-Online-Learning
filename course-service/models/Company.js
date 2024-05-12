@@ -18,6 +18,10 @@ const CompanySchema = new mongoose.Schema(
       enum: ["active", "inactive"],
       default: "active",
     },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   {
     timestamps: true,
