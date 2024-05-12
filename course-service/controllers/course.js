@@ -4,6 +4,7 @@ import Course from "../models/Course.js";
 import Question from "../models/Questions.js";
 import Quiz from "../models/Quiz.js";
 import axios from "axios";
+import Company from "../models/Company.js";
 
 export const createCourse = async (req, res) => {
   const { title, description, category, company, image, price } = req.body;
@@ -126,10 +127,31 @@ export const getCourseNameAndId = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 export const getCourseByUserId = async (req, res) => {
   try {
-    const courses = await Course.find({ company: req.params.id }).select(
+    const jwtToken = req.headers.authorization;
+    console.log("🚀 ~ getCourseByUserId ~ jwtToken:", jwtToken);
+
+    async function fecthUser() {
+      try {
+        const response = await axios.get(
+          `${process.env.USER_SERVICE_URL}/api/me`,
+          {
+            headers: {
+              Authorization: jwtToken,
+            },
+          }
+        );
+        return response.data;
+      } catch (error) {
+        throw new Error("User cannot be found!");
+      }
+    }
+    const user = await fecthUser();
+    const userId = user._id;
+    const company = await Company.findOne({ user: userId });
+
+    const courses = await Course.find({ company: company._id }).select(
       "title image description"
     );
     res.status(200).json({ courses });
