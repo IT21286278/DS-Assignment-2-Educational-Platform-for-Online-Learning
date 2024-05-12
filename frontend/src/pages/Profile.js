@@ -9,6 +9,7 @@ function Profile() {
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  // Function to handle user logout
   const handleLogout = () => {
     setUser(null);
     localStorage.clear();
