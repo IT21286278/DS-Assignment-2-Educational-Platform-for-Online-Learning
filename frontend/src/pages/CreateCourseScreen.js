@@ -9,12 +9,14 @@ const CreateCourseScreen = () => {
     description: "",
     category: "",
     company: "",
-    image: "",
   });
 
+  console.log("🚀 ~ CreateCourseScreen ~ courseData:", courseData);
   useEffect(() => {
     getCompanies();
   }, []);
+
+  const [image, setImage] = useState(null);
 
   const getCompanies = async () => {
     try {
@@ -41,7 +43,7 @@ const CreateCourseScreen = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(courseData),
+      body: JSON.stringify({ ...courseData, image }),
     });
     const data = await response.json();
     console.log(data);
@@ -127,9 +129,7 @@ const CreateCourseScreen = () => {
           <label htmlFor="image" className="form-label">
             Image
           </label>
-          <UploadWidget
-            onUpload={(image) => setCourseData({ ...courseData, image })}
-          />
+          <UploadWidget onUpload={setImage} />
         </div>
 
         <button

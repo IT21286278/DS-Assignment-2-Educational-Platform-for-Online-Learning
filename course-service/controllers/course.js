@@ -72,11 +72,11 @@ export const updateCourse = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 export const deleteCourse = async (req, res) => {
   // Delete the course and course image
   try {
     const course = await Course.findById(req.params.id);
+    console.log("🚀 ~ deleteCourse ~ course:", course);
     if (!course) {
       return res.status(404).json({ error: "Course not found" });
     }
@@ -87,11 +87,13 @@ export const deleteCourse = async (req, res) => {
     });
 
     // Delete the existing image
-    const publicId = course.image.split("/").pop().split(".")[0];
-    await cloudinary.uploader.destroy(publicId);
+    if (course.image) {
+      const publicId = course.image.split("/").pop().split(".")[0];
+      await cloudinary.uploader.destroy(publicId);
+    }
 
-    await course.remove();
-    res.status(200).json({ course });
+    await Course.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Course deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

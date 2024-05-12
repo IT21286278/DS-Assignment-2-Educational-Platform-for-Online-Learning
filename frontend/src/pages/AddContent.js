@@ -6,9 +6,48 @@ const AddContent = ({ courseId = "663bafc13b69cb80171a3554" }) => {
     type: "note",
     note: "",
     video: "",
-    quiz: "",
     status: "draft",
   });
+
+  const [quiz, setQuiz] = useState({
+    title: "",
+    questions: [],
+  });
+  console.log("🚀 ~ AddContent ~ quiz:", quiz);
+  const handleQuestionChange = (e, questionIndex) => {
+    const questions = [...quiz.questions];
+    questions[questionIndex].question = e.target.value;
+    setQuiz({ ...quiz, questions });
+  };
+
+  const handleOptionChange = (e, questionIndex, optionIndex) => {
+    const questions = [...quiz.questions];
+    questions[questionIndex].options[optionIndex].option = e.target.value;
+    setQuiz({ ...quiz, questions });
+  };
+
+  const handleIsCorrectChange = (e, questionIndex, optionIndex) => {
+    const questions = [...quiz.questions];
+    questions[questionIndex].options[optionIndex].isCorrect = e.target.checked;
+    setQuiz({ ...quiz, questions });
+  };
+  const addQuestion = () => {
+    setQuiz({
+      ...quiz,
+      questions: [
+        ...quiz.questions,
+        {
+          question: "",
+          options: [
+            { option: "", isCorrect: false },
+            { option: "", isCorrect: false },
+            { option: "", isCorrect: false },
+            { option: "", isCorrect: false },
+          ],
+        },
+      ],
+    });
+  };
 
   const [error, setError] = useState("");
 
@@ -35,7 +74,6 @@ const AddContent = ({ courseId = "663bafc13b69cb80171a3554" }) => {
 
   const addContent = async () => {
     if (validateContent()) return;
-
     try {
       const response = await fetch("http://localhost:8001/course/addContent", {
         method: "POST",
@@ -111,19 +149,72 @@ const AddContent = ({ courseId = "663bafc13b69cb80171a3554" }) => {
             />
           </div>
         ) : (
-          <div className="mb-3">
-            <label htmlFor="quiz" className="form-label">
-              Quiz
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="quiz"
-              placeholder="Enter quiz"
-              value={content.quiz}
-              onChange={(e) => setContent({ ...content, quiz: e.target.value })}
-            />
-          </div>
+          content &&
+          content.type === "quiz" && (
+            <div className="mb-3">
+              <label htmlFor="quiz" className="form-label">
+                Quiz
+              </label>
+              <label htmlFor="title" className="form-label">
+                Quiz Title
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="title"
+                placeholder="Enter quiz title"
+                value={quiz.title}
+                onChange={(e) => setQuiz({ ...quiz, title: e.target.value })}
+              />
+              <label htmlFor="questions" className="form-label">
+                Questions
+              </label>
+              {quiz.questions.map((q, questionIndex) => (
+                <div key={questionIndex}>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id={`question-${questionIndex}`}
+                    placeholder="Enter question"
+                    value={q.question}
+                    onChange={(e) => handleQuestionChange(e, questionIndex)}
+                  />
+                  {q.options.map((o, optionIndex) => (
+                    <div key={optionIndex}>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id={`option-${questionIndex}-${optionIndex}`}
+                        placeholder="Enter option"
+                        value={o.option}
+                        onChange={(e) =>
+                          handleOptionChange(e, questionIndex, optionIndex)
+                        }
+                      />
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        id={`isCorrect-${questionIndex}-${optionIndex}`}
+                        checked={o.isCorrect}
+                        onChange={(e) =>
+                          handleIsCorrectChange(e, questionIndex, optionIndex)
+                        }
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor={`isCorrect-${questionIndex}-${optionIndex}`}
+                      >
+                        Is Correct
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              ))}
+              <button className="btn btn-primary" onClick={addQuestion}>
+                Add Question
+              </button>
+            </div>
+          )
         )}
         <div className="mb-3">
           <label htmlFor="status" className="form-label">

@@ -5,7 +5,10 @@ const ContentSchema = new mongoose.Schema(
     type: { type: String, enum: ["video", "quiz", "note"] },
     note: String,
     video: String,
-    quiz: String,
+    quiz: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Quiz",
+    },
     status: { type: String, enum: ["draft", "published", "deleted"] },
   },
   {
