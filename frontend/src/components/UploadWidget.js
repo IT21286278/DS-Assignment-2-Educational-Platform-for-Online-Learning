@@ -1,8 +1,11 @@
 import { useEffect, useRef } from "react";
+import CloudUploadRoundedIcon from "@mui/icons-material/CloudUploadRounded";
+import "./Common.css"; // Import custom CSS for additional styling
 
 const UploadWidget = ({ onUpload }) => {
   const cloudinaryRef = useRef();
   const widgetRef = useRef();
+
   useEffect(() => {
     cloudinaryRef.current = window.cloudinary;
     widgetRef.current = cloudinaryRef.current.createUploadWidget(
@@ -21,12 +24,13 @@ const UploadWidget = ({ onUpload }) => {
   }, []);
 
   return (
-    <button
-      onClick={() => widgetRef.current.open()}
-      className="btn btn-primary"
-    >
-      Upload Image
-    </button>
+    <div className='upload-button-container'>
+      <CloudUploadRoundedIcon
+        className='upload-button-icon'
+        onClick={() => widgetRef.current.open()}
+      />
+      <span className='upload-button-text'>Upload</span>
+    </div>
   );
 };
 

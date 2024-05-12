@@ -120,6 +120,26 @@ export const getAllCourses = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+export const getCourseById = async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.id)
+      .populate("company")
+      .populate({
+        path: "content",
+        populate: {
+          path: "quiz",
+          model: "Quiz",
+          populate: {
+            path: "questions",
+            model: "Question",
+          },
+        },
+      });
+    res.status(200).json({ course });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 export const getCourseWithCompany = async (req, res) => {
   try {
@@ -132,11 +152,7 @@ export const getCourseWithCompany = async (req, res) => {
 
 export const addContent = async (req, res) => {
   try {
-    const { note, video, quiz, courseId, type, status } = req.body;
-
-    // console.log(JSON.stringify({ note, video, quiz, courseId, type, status }));
-
-    // return res.status(400).json({ message: "Content not added successfully" });
+    const { note, video, quiz, courseId, type, status, order } = req.body;
 
     if (type === "" || status === "") {
       return res.status(400).json({ error: "All fields are required" });
@@ -169,6 +185,7 @@ export const addContent = async (req, res) => {
     }
     content.type = type;
     content.status = status;
+    content.order = order;
 
     await content.save();
 
