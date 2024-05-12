@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 68vh;
 }
 
 .success-content {
@@ -10,12 +10,11 @@
 }
 
 .success-icon {
-  color: #4caf50; /* Green color for success */
-  font-size: 64px;
+  color: #4caf50;
+  width: 500px;
 }
 
 .success-heading {
-  margin-top: 20px;
   font-size: 32px;
 }
 

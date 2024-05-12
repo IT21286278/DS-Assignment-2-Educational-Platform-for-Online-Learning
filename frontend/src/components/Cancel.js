@@ -6,7 +6,11 @@ function Cancel() {
   return (
     <div className='cancel-container'>
       <div className='cancel-content'>
-        <CancelIcon className='cancel-icon' />
+        <img
+          src='https://cdn.dribbble.com/users/251873/screenshots/9288094/13539-sign-for-error-or-explanation-alert.gif'
+          alt='cancel'
+          className='cancel-icon'
+        />
         <h1 className='cancel-heading'>
           Sorry to see you cancelled your Stripe payment!
         </h1>
