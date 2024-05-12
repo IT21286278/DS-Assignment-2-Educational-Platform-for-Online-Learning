@@ -84,14 +84,14 @@ const Home = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-center">
-        <h2 className="">Hello Learner! Welcome to the EduRookie</h2>
+      <div className='d-flex justify-content-center'>
+        <h2 className=''>Hello Learner! Welcome to the EduRookie</h2>
       </div>
       <Dashboard />
-      <div className="container d-flex justify-content-center">
-        <div className="row">
+      <div className='container d-flex justify-content-center'>
+        <div className='row'>
           {courses.map((course, index) => (
-            <div className="col-md-4 mb-4" key={index}>
+            <div className='col-md-4 mb-4' key={index}>
               <CourseCard {...course} />
             </div>
           ))}
