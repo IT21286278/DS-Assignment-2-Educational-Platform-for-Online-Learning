@@ -9,14 +9,15 @@ import cloudinary from "../middlewares/cloudinary.js";
 import streamifier from "streamifier";
 
 export const createCourse = async (req, res) => {
-  const { title, description, category, company, image } = req.body;
+  const { title, description, category, company, image, price } = req.body;
 
   if (
     title === "" ||
     description === "" ||
     category === "" ||
     company === "" ||
-    image === ""
+    image === "" ||
+    price === ""
   ) {
     return res.status(400).json({ error: "All fields are required" });
   }

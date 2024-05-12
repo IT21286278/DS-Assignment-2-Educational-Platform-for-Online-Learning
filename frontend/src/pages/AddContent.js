@@ -2,6 +2,8 @@ import React, { useContext, useState } from "react";
 import UploadWidget from "../components/UploadWidget";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import ToastContext from "../context/ToastContext";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const AddContent = ({ courseId = "6640b441402a704e0c62c0ef" }) => {
   const { toast } = useContext(ToastContext);
@@ -139,13 +141,10 @@ const AddContent = ({ courseId = "6640b441402a704e0c62c0ef" }) => {
             <label htmlFor='note' className='form-label'>
               Note
             </label>
-            <input
-              type='text'
-              className='form-control'
+            <ReactQuill
               id='note'
-              placeholder='Enter note here...'
               value={content.note}
-              onChange={(e) => setContent({ ...content, note: e.target.value })}
+              onChange={(value) => setContent({ ...content, note: value })}
             />
           </div>
         )}

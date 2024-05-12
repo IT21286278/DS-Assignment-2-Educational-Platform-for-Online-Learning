@@ -1,8 +1,41 @@
 import Company from "../models/Company.js";
 import cloudinary from "cloudinary";
+import axios from "axios";
 
 export const createCompany = async (req, res) => {
-  const { name, description, status, logo } = req.body;
+  const { name, description, status, logo, email, password } = req.body;
+  if (
+    name === "" ||
+    description === "" ||
+    status === "" ||
+    logo === "" ||
+    email === "" ||
+    password === ""
+  ) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+  async function registerUser(email, password, role) {
+    try {
+      const response = await axios.post(
+        `${process.env.USER_SERVICE_URL}/api/register`,
+        {
+          email,
+          password,
+          role,
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      return res.status(404).json({ error: "User cannot be found!" });
+    }
+  }
+
+  const user = await registerUser(email, password, "Instructor");
+
+  if (user.error) {
+    return res.status(404).json({ error: "User cannot be found!" });
+  }
 
   try {
     const company = new Company({
@@ -10,6 +43,7 @@ export const createCompany = async (req, res) => {
       description,
       logo,
       status,
+      userId: user._id,
     });
 
     await company.save();

@@ -8,6 +8,7 @@ const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
   const { toast } = useContext(ToastContext);
   const [user, setUser] = useState(null);
+  console.log("🚀 ~ AuthContextProvider ~ user:", user);
   const navigate = useNavigate();
   const location = useLocation();
 
