@@ -1,12 +1,8 @@
-import Course from "../models/Course.js";
-import multer from "multer";
-import path from "path";
-import fs from "fs";
-import Content from "../models/Content.js";
-import Quiz from "../models/Quiz.js";
-import Question from "../models/Questions.js";
 import cloudinary from "../middlewares/cloudinary.js";
-import streamifier from "streamifier";
+import Content from "../models/Content.js";
+import Course from "../models/Course.js";
+import Question from "../models/Questions.js";
+import Quiz from "../models/Quiz.js";
 import axios from "axios";
 
 export const createCourse = async (req, res) => {
@@ -85,6 +81,7 @@ export const updateCourse = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 export const deleteCourse = async (req, res) => {
   // Delete the course and course image
   try {
@@ -120,6 +117,16 @@ export const getCourse = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const getCourseNameAndId = async (req, res) => {
+  try {
+    const courses = await Course.find().select("title _id");
+    res.status(200).json({ courses });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 //
 export const getAllCourses = async (req, res) => {
   try {

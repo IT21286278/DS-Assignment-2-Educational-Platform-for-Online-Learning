@@ -99,6 +99,42 @@ const Navbar = () => {
                 </Link>
               </li>
             )}
+            {user.role === "Instructor" && (
+              <>
+                <li className="nav-item">
+                  <Link to="./createCourses" style={{ textDecoration: "none" }}>
+                    <p className="nav-item ">
+                      <button className=" btn btn-primary btn-sm btn text-nowrap">
+                        Create Course
+                      </button>
+                    </p>
+                  </Link>
+                </li>
+
+                <li className="nav-item">
+                  <Link to="./addContent" style={{ textDecoration: "none" }}>
+                    <p className="nav-item ">
+                      <button className=" btn btn-primary btn-sm btn text-nowrap">
+                        Add Content
+                      </button>
+                    </p>
+                  </Link>
+                </li>
+
+                <li className="nav-item">
+                  <Link
+                    to="./companyCourses"
+                    style={{ textDecoration: "none" }}
+                  >
+                    <p className="nav-item ">
+                      <button className=" btn btn-primary btn-sm btn text-nowrap">
+                        My Courses
+                      </button>
+                    </p>
+                  </Link>
+                </li>
+              </>
+            )}
 
             <li className="nav-item">
               <Link to="./" style={{ textDecoration: "none" }}>
