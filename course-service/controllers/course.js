@@ -115,7 +115,17 @@ export const getCourseNameAndId = async (req, res) => {
   }
 };
 
-//
+export const getCourseByUserId = async (req, res) => {
+  try {
+    const courses = await Course.find({ company: req.params.id }).select(
+      "title image description"
+    );
+    res.status(200).json({ courses });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const getAllCourses = async (req, res) => {
   try {
     const courses = await Course.find().populate(
