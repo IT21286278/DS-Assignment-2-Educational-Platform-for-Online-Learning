@@ -16,31 +16,6 @@ app.use(express.json()); //Send responses in json format
 app.use(morgan('tiny')); //log requests
 app.use(cors());
 
-app.get('/', (req, res) => {
-  res.send('Hello from express');
-});
-
-// Route to send notification
-app.post('/send-notification', async (req, res) => {
-  const { studentEmails, subject, message } = req.body; // Extract data from request body
-
-  if (!studentEmails || !subject || !message) {
-    return res
-      .status(400)
-      .send(
-        'Please provide studentEmails, subject, and message in the request body.'
-      );
-  }
-
-  try {
-    await sendTimetableNotification(studentEmails, subject, message);
-    res.send('Notification sent successfully.');
-  } catch (error) {
-    console.log(error);
-    res.status(500).send('Error sending notification.');
-  }
-});
-
 // Define sendTimetableNotification function
 const sendTimetableNotification = async (studentEmails, subject, message) => {
   // Create a nodemailer transporter
@@ -70,6 +45,33 @@ const sendTimetableNotification = async (studentEmails, subject, message) => {
     }
   }
 }; 
+
+app.get('/', (req, res) => {
+  res.send('Hello from express');
+});
+
+// Route to send notification
+app.post('/send-notification', async (req, res) => {
+  const { studentEmails, subject, message } = req.body; // Extract data from request body
+
+  if (!studentEmails || !subject || !message) {
+    return res
+      .status(400)
+      .send(
+        'Please provide studentEmails, subject, and message in the request body.'
+      );
+  }
+
+  try {
+    await sendTimetableNotification(studentEmails, subject, message);
+    res.send('Notification sent successfully.');
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Error sending notification.');
+  }
+});
+
+
 
 //server config
 const PORT = process.env.PORT || 9000;
