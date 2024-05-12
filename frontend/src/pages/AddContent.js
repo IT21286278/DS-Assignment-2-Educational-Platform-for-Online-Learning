@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import UploadWidget from "../components/UploadWidget";
 
-const AddContent = ({ courseId = "663bafc13b69cb80171a3554" }) => {
+const AddContent = ({ courseId = "6640b441402a704e0c62c0ef" }) => {
   const [content, setContent] = useState({
     type: "note",
     note: "",
@@ -65,8 +65,8 @@ const AddContent = ({ courseId = "663bafc13b69cb80171a3554" }) => {
       setError("Note is required");
       return true;
     }
-    if (content.type === "quiz" && content.quiz === "") {
-      setError("Quiz is required");
+    if (content.type === "quiz" && quiz.title === "") {
+      setError("Quiz title is required");
       return true;
     }
     return false;
@@ -80,7 +80,7 @@ const AddContent = ({ courseId = "663bafc13b69cb80171a3554" }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...content, courseId }),
+        body: JSON.stringify({ ...content, courseId, quiz }),
       });
       const data = await response.json();
       if (data.error) {

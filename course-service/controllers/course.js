@@ -134,6 +134,10 @@ export const addContent = async (req, res) => {
   try {
     const { note, video, quiz, courseId, type, status } = req.body;
 
+    // console.log(JSON.stringify({ note, video, quiz, courseId, type, status }));
+
+    // return res.status(400).json({ message: "Content not added successfully" });
+
     if (type === "" || status === "") {
       return res.status(400).json({ error: "All fields are required" });
     }
@@ -144,7 +148,24 @@ export const addContent = async (req, res) => {
     } else if (type === "note") {
       content.note = note;
     } else {
-      content.quiz = quiz;
+      const questions = await Promise.all(
+        quiz.questions.map(async (q) => {
+          const question = new Question({
+            question: q.question,
+            options: q.options,
+          });
+          await question.save();
+          return question;
+        })
+      );
+
+      const newQuiz = new Quiz({
+        title: quiz.title,
+        questions,
+      });
+
+      await newQuiz.save();
+      content.quiz = newQuiz;
     }
     content.type = type;
     content.status = status;
