@@ -13,14 +13,14 @@ const addNewEnrollment = async (req, res) => {
       );
       return response.data;
     } catch (error) {
-      return res.status(404).json({ error: "Course cannot be found!" });
+      throw new Error("Course cannot be found!");
     }
   }
 
   async function fecthUser() {
     try {
       const response = await axios.get(
-        `${process.env.USER_SERVICE_URL}/user/me`,
+        `${process.env.USER_SERVICE_URL}/api/me`,
         {
           headers: {
             Authorization: jwtToken,
@@ -29,12 +29,12 @@ const addNewEnrollment = async (req, res) => {
       );
       return response.data;
     } catch (error) {
-      return res.status(404).json({ error: "User cannot be found!" });
+      throw new Error("User cannot be found!");
     }
   }
 
   try {
-    await fetchCourse(courseId);
+    const course = await fetchCourse(courseId);
     const user = await fecthUser();
 
     const enrollment = await Enrollment.findOne({
@@ -192,6 +192,7 @@ const isEnrolled = async (req, res) => {
       userId: userId,
       courseId: courseId,
     });
+    console.log("🚀 ~ isEnrolled ~ enrollment:", enrollment);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

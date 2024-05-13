@@ -23,6 +23,12 @@ app.post("/checkout", async (req, res) => {
   if (!courses) {
     return res.status(400).json({ error: "No courses found" });
   }
+
+  //check if the stripeProductId is valid
+  if (courses.some((course) => !course.stripeProductId)) {
+    return res.status(400).json({ error: "Invalid course" });
+  }
+
   const courseItems = courses.map((courses) => ({
     price: courses.stripeProductId,
     quantity: 1,
