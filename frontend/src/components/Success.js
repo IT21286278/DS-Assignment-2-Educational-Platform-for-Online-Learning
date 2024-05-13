@@ -51,6 +51,12 @@ function Success() {
         <p className='success-message'>
           Your course purchase was successful. Start learning now!
         </p>
+        <button
+          className='btn btn-primary btn-lg success-btn'
+          onClick={() => window.location.replace("/")}
+        >
+          Go to Home
+        </button>
       </div>
     </div>
   );
