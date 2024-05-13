@@ -48,15 +48,27 @@ export const createCourse = async (req, res) => {
 };
 
 export const updateCourse = async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: "No file was uploaded" });
-  }
-
   try {
-    const course = await Course.findById(req.body.id);
+    const { title, description, category, companyId, image, price, courseId } =
+      req.body;
+
+    if (
+      title === "" ||
+      description === "" ||
+      category === "" ||
+      companyId === "" ||
+      image === "" ||
+      price === "" ||
+      courseId === ""
+    ) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ error: "Course not found" });
     }
+
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,
@@ -67,16 +79,16 @@ export const updateCourse = async (req, res) => {
     const publicId = course.image.split("/").pop().split(".")[0];
     await cloudinary.uploader.destroy(publicId);
 
-    // Upload the new image
-    const result = await cloudinary.uploader.upload(req.file.path);
-    const imagePath = result.secure_url;
-
     // Update the course
-    course.title = req.body.title;
-    course.description = req.body.description;
-    course.category = req.body.category;
-    course.image = imagePath;
+    course.title = title;
+    course.description = description;
+    course.category = category;
+    course.image = image;
+    course.price = price;
+    course.company = companyId;
+
     await course.save();
+
     res.status(200).json({ course });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -148,8 +160,10 @@ export const getCourseByUserId = async (req, res) => {
       }
     }
     const user = await fecthUser();
+    console.log("🚀 ~ getCourseByUserId ~ user:", user);
     const userId = user._id;
-    const company = await Company.findOne({ user: userId });
+    const company = await Company.findOne({ userId: userId });
+    console.log("🚀 ~ getCourseByUserId ~ company:", company);
 
     const courses = await Course.find({ company: company._id }).select(
       "title image description"

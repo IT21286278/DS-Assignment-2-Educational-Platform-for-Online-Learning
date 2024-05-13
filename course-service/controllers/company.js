@@ -1,18 +1,18 @@
-import Company from '../models/Company.js';
-import cloudinary from 'cloudinary';
-import axios from 'axios';
+import Company from "../models/Company.js";
+import cloudinary from "cloudinary";
+import axios from "axios";
 
 export const createCompany = async (req, res) => {
   const { name, description, status, logo, email, password } = req.body;
   if (
-    name === '' ||
-    description === '' ||
-    status === '' ||
-    logo === '' ||
-    email === '' ||
-    password === ''
+    name === "" ||
+    description === "" ||
+    status === "" ||
+    logo === "" ||
+    email === "" ||
+    password === ""
   ) {
-    return res.status(400).json({ error: 'All fields are required' });
+    return res.status(400).json({ error: "All fields are required" });
   }
   async function registerUser(email, password, role) {
     try {
@@ -27,14 +27,14 @@ export const createCompany = async (req, res) => {
 
       return response.data;
     } catch (error) {
-      return res.status(404).json({ error: 'User cannot be found!' });
+      return res.status(404).json({ error: "User cannot be found!" });
     }
   }
 
-  const user = await registerUser(email, password, 'Instructor');
+  const user = await registerUser(email, password, "Instructor");
 
   if (user.error) {
-    return res.status(404).json({ error: 'User cannot be found!' });
+    return res.status(404).json({ error: "User cannot be found!" });
   }
 
   try {
@@ -60,7 +60,7 @@ export const updateCompany = async (req, res) => {
       new: true,
     });
     if (!company) {
-      return res.status(404).json({ error: 'Company not found' });
+      return res.status(404).json({ error: "Company not found" });
     }
 
     // Delete the old logo from cloudinary
@@ -70,7 +70,7 @@ export const updateCompany = async (req, res) => {
         api_key: process.env.CLOUDINARY_API_KEY,
         api_secret: process.env.CLOUDINARY_API_SECRET,
       });
-      const publicId = company.logo.split('/').pop().split('.')[0];
+      const publicId = company.logo.split("/").pop().split(".")[0];
       await cloudinary.uploader.destroy(publicId);
     }
 
@@ -84,14 +84,14 @@ export const deleteCompany = async (req, res) => {
   try {
     const company = await Company.findByIdAndDelete(req.params.id);
     if (!company) {
-      return res.status(404).json({ error: 'Company not found' });
+      return res.status(404).json({ error: "Company not found" });
     }
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,
       api_secret: process.env.CLOUDINARY_API_SECRET,
     });
-    const publicId = company.logo.split('/').pop().split('.')[0];
+    const publicId = company.logo.split("/").pop().split(".")[0];
     await cloudinary.uploader.destroy(publicId);
 
     res.status(200).json({ company });
@@ -121,11 +121,11 @@ export const getAllCompanies = async (req, res) => {
 export const getCompanyNames = async (req, res) => {
   try {
     // Error fetching companies Error: Invalid select: select only takes 1 argument
-    const companies = await Company.find().select('name');
+    const companies = await Company.find().select("name");
 
     res.status(200).json({ companies });
   } catch (error) {
-    console.error('Error fetching companies', error);
+    console.error("Error fetching companies", error);
     res.status(500).json({ error: error.message });
   }
 };
