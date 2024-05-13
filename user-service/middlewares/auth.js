@@ -17,8 +17,8 @@ const authenticateToken = (req, res, next) => {
         //find user
         try {
           const user = await User.findOne({ _id: payload._id }).select(
-            "-password"
-          ); //remove password
+            "-password" //remove password
+          ); 
           //attaching the user to the req.user
           req.user = user;
           next();
