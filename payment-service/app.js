@@ -19,8 +19,12 @@ app.post("/checkout", async (req, res) => {
   console.log(req.body);
 
   const courses = req.body.courses;
+
+  if (!courses) {
+    return res.status(400).json({ error: "No courses found" });
+  }
   const courseItems = courses.map((courses) => ({
-    price: courses.id,
+    price: courses.stripeProductId,
     quantity: 1,
   }));
 
@@ -35,17 +39,19 @@ app.post("/checkout", async (req, res) => {
 });
 
 app.post("/create-product", async (req, res) => {
-  const { name, price } = req.body;
+  const { name, price, images } = req.body;
+
+  if (!name || !price || !images) {
+    return res.status(400).json({ error: "Please provide all fields" });
+  }
 
   try {
     const product = await stripeClient.products.create({
       name: name,
+      images: images,
       default_price_data: {
         unit_amount: price,
         currency: "lkr",
-        recurring: {
-          interval: "month",
-        },
       },
       expand: ["default_price"],
     });

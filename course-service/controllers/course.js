@@ -25,10 +25,11 @@ export const createCourse = async (req, res) => {
       "http://localhost:8003/create-product",
       {
         name: title,
-        price: price * 100, // Stripe expects the price in cents
+        price: price * 100,
+        images: [image],
       }
     );
-
+    console.log("🚀 ~ createCourse ~ stripeProduct:", stripeProduct);
     const course = new Course({
       title,
       description,
@@ -36,8 +37,9 @@ export const createCourse = async (req, res) => {
       company,
       image,
       price,
-      stripeProductId: stripeProduct.id, // Store the Stripe product ID
+      stripeProductId: stripeProduct.default_price.id,
     });
+
     await course.save();
 
     res.status(201).json({ course });
