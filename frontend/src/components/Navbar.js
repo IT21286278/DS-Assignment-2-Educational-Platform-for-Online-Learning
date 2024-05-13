@@ -92,7 +92,15 @@ const Navbar = () => {
                   style={{ textDecoration: "none" }}
                 >
                   <p className="nav-item ">
-                    <button className=" btn btn-primary btn-sm btn text-nowrap">
+                    <button
+                      className=" btn btn-primary btn-sm btn text-nowrap"
+                      style={{
+                        backgroundColor: "white",
+                        color: "black",
+                        fontWeight: "bold",
+                        margin: "5px",
+                      }}
+                    >
                       Create Company
                     </button>
                   </p>
@@ -101,10 +109,21 @@ const Navbar = () => {
             )}
             {user.role === "Instructor" && (
               <>
-                <li className="nav-item">
+                <li
+                  className="nav-item"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
                   <Link to="./createCourses" style={{ textDecoration: "none" }}>
                     <p className="nav-item ">
-                      <button className=" btn btn-primary btn-sm btn text-nowrap">
+                      <button
+                        className=" btn btn-primary btn-sm btn text-nowrap shadow-sm"
+                        style={{
+                          backgroundColor: "white",
+                          color: "black",
+                          fontWeight: "bold",
+                          margin: "5px",
+                        }}
+                      >
                         Create Course
                       </button>
                     </p>
@@ -114,7 +133,15 @@ const Navbar = () => {
                 <li className="nav-item">
                   <Link to="./addContent" style={{ textDecoration: "none" }}>
                     <p className="nav-item ">
-                      <button className=" btn btn-primary btn-sm btn text-nowrap">
+                      <button
+                        className=" btn btn-primary btn-sm btn text-nowrap"
+                        style={{
+                          backgroundColor: "white",
+                          color: "black",
+                          fontWeight: "bold",
+                          margin: "5px",
+                        }}
+                      >
                         Add Content
                       </button>
                     </p>
@@ -127,7 +154,15 @@ const Navbar = () => {
                     style={{ textDecoration: "none" }}
                   >
                     <p className="nav-item ">
-                      <button className=" btn btn-primary btn-sm btn text-nowrap">
+                      <button
+                        className=" btn btn-primary btn-sm btn text-nowrap"
+                        style={{
+                          backgroundColor: "white",
+                          color: "black",
+                          fontWeight: "bold",
+                          margin: "5px",
+                        }}
+                      >
                         My Courses
                       </button>
                     </p>
