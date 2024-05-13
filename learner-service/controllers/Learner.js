@@ -1,6 +1,6 @@
-import Learner from '../models/Learner.js';
-import axios from 'axios';
-import Enrollment from '../models/Enrollment.js';
+import Learner from "../models/Learner.js";
+import axios from "axios";
+import Enrollment from "../models/Enrollment.js";
 
 const addNewEnrollment = async (req, res) => {
   const { courseId } = req.params;
@@ -13,7 +13,7 @@ const addNewEnrollment = async (req, res) => {
       );
       return response.data;
     } catch (error) {
-      return res.status(404).json({ error: 'Course cannot be found!' });
+      return res.status(404).json({ error: "Course cannot be found!" });
     }
   }
 
@@ -29,7 +29,7 @@ const addNewEnrollment = async (req, res) => {
       );
       return response.data;
     } catch (error) {
-      return res.status(404).json({ error: 'User cannot be found!' });
+      return res.status(404).json({ error: "User cannot be found!" });
     }
   }
 
@@ -45,13 +45,13 @@ const addNewEnrollment = async (req, res) => {
     if (enrollment) {
       return res
         .status(400)
-        .json({ error: 'Learner has already enrolled to this module!' });
+        .json({ error: "Learner has already enrolled to this module!" });
     }
 
     const newEnrollment = new Enrollment({
       userId: user._id,
       courseId: courseId,
-      status: 'Pending',
+      status: "Pending",
     });
     const savedEnrollment = await newEnrollment.save();
     return res.status(201).json(savedEnrollment);
@@ -76,7 +76,7 @@ const cancelEnrollment = async (req, res) => {
       );
       return response.data;
     } catch (error) {
-      return res.status(404).json({ error: 'User cannot be found!' });
+      return res.status(404).json({ error: "User cannot be found!" });
     }
   }
 
@@ -91,16 +91,16 @@ const cancelEnrollment = async (req, res) => {
     if (!enrollment) {
       return res
         .status(404)
-        .json({ error: 'Learner has not enrolled to this module!' });
+        .json({ error: "Learner has not enrolled to this module!" });
     }
 
-    if (enrollment.status === 'Cancelled') {
+    if (enrollment.status === "Cancelled") {
       return res
         .status(400)
-        .json({ error: 'Learner has already cancelled this enrollment!' });
+        .json({ error: "Learner has already cancelled this enrollment!" });
     }
 
-    enrollment.status = 'Cancelled';
+    enrollment.status = "Cancelled";
     const savedEnrollment = await enrollment.save();
     return res.status(200).json(savedEnrollment);
   } catch (error) {
@@ -124,7 +124,7 @@ const enrollInCourses = async (req, res) => {
       );
       return response.data.courses;
     } catch (error) {
-      throw new Error('Failed to fetch courses');
+      throw new Error("Failed to fetch courses");
     }
   };
 
@@ -140,7 +140,7 @@ const enrollInCourses = async (req, res) => {
       );
       return response.data;
     } catch (error) {
-      return res.status(404).json({ error: 'User cannot be found!' });
+      return res.status(404).json({ error: "User cannot be found!" });
     }
   }
 
@@ -165,7 +165,7 @@ const enrollInCourses = async (req, res) => {
     if (alreadyEnrolledCourses.length > 0) {
       return res.status(400).json({
         message: `You are already enrolled in the following courses: ${alreadyEnrolledCourses.join(
-          ', '
+          ", "
         )}`,
       });
     }
@@ -179,10 +179,31 @@ const enrollInCourses = async (req, res) => {
 
     return res
       .status(201)
-      .json({ message: 'Enrolled successfully', enrollments });
+      .json({ message: "Enrolled successfully", enrollments });
   } catch (error) {
-    console.error('Failed to enroll learner:', error);
+    console.error("Failed to enroll learner:", error);
     throw error;
+  }
+};
+
+//check if the user is already enrolled in the course
+//if yes, return true
+//if no, return false
+const isEnrolled = async (req, res) => {
+  const { userId, courseId } = req.params;
+  let enrollment;
+  try {
+    enrollment = await Enrollment.findOne({
+      userId: userId,
+      courseId: courseId,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  if (enrollment) {
+    return res.status(200).json({ isEnrolled: true });
+  } else {
+    return res.status(200).json({ isEnrolled: false });
   }
 };
 
@@ -202,7 +223,7 @@ const updateLearnedContent = async (req, res) => {
       );
       return response.data;
     } catch (error) {
-      return res.status(404).json({ error: 'User cannot be found!' });
+      return res.status(404).json({ error: "User cannot be found!" });
     }
   }
 
@@ -217,36 +238,36 @@ const updateLearnedContent = async (req, res) => {
     if (!enrollment) {
       return res
         .status(404)
-        .json({ error: 'Learner has not enrolled to this module!' });
+        .json({ error: "Learner has not enrolled to this module!" });
     }
 
-    if (enrollment.status === 'Pending') {
+    if (enrollment.status === "Pending") {
       return res
         .status(400)
-        .json({ error: 'Learner has not been enrolled to this course yet!' });
+        .json({ error: "Learner has not been enrolled to this course yet!" });
     }
-    if (enrollment.status === 'Cancelled') {
+    if (enrollment.status === "Cancelled") {
       return res
         .status(400)
-        .json({ error: 'Learner has cancelled this enrollment!' });
-    }
-
-    if (enrollment.status === 'Rejected') {
-      return res
-        .status(400)
-        .json({ error: 'Learner has rejected this enrollment!' });
+        .json({ error: "Learner has cancelled this enrollment!" });
     }
 
-    if (enrollment.status === 'Completed') {
+    if (enrollment.status === "Rejected") {
       return res
         .status(400)
-        .json({ error: 'Learner has already completed this course!' });
+        .json({ error: "Learner has rejected this enrollment!" });
+    }
+
+    if (enrollment.status === "Completed") {
+      return res
+        .status(400)
+        .json({ error: "Learner has already completed this course!" });
     }
 
     if (enrollment.coveredContent.includes(contentId)) {
       return res
         .status(400)
-        .json({ error: 'Learner has already learned this content!' });
+        .json({ error: "Learner has already learned this content!" });
     }
 
     enrollment.coveredContent.push(contentId);
@@ -260,5 +281,6 @@ export {
   addNewEnrollment,
   cancelEnrollment,
   enrollInCourses,
+  isEnrolled,
   updateLearnedContent,
 };

@@ -6,6 +6,12 @@ import { connect } from './config/db_con.js';
 import nodemailer from 'nodemailer'; // Import nodemailer module
 
 dotenv.config();
+const app = express();
+
+//middlewares
+app.use(express.json()); //Send responses in json format
+app.use(morgan('tiny')); //log requests
+app.use(cors());
 
 // Define sendTimetableNotification function
 const sendTimetableNotification = async (studentEmails, subject, message) => {
@@ -35,14 +41,7 @@ const sendTimetableNotification = async (studentEmails, subject, message) => {
       console.log('Error sending email', err);
     }
   }
-};
-
-const app = express();
-
-//middlewares
-app.use(express.json()); //Send responses in json format
-app.use(morgan('tiny')); //log requests
-app.use(cors());
+}; 
 
 app.get('/', (req, res) => {
   res.send('Hello from express');

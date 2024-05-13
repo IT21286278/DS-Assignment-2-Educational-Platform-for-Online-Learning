@@ -9,9 +9,17 @@ export const CommonContextProvider = ({ children }) => {
   const { toast } = useContext(ToastContext);
 
   const [selectedCourseId, setSelectedCourseId] = useState(null);
+  const [isEnrolled, setIsEnrolled] = useState(false);
 
   return (
-    <CommonContext.Provider value={{ selectedCourseId, setSelectedCourseId }}>
+    <CommonContext.Provider
+      value={{
+        selectedCourseId,
+        setSelectedCourseId,
+        isEnrolled,
+        setIsEnrolled,
+      }}
+    >
       {children}
     </CommonContext.Provider>
   );
