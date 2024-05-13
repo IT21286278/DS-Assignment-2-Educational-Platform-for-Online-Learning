@@ -13,8 +13,7 @@ import AuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const CourseContent = () => {
-  const { selectedCourseId, setIsEnrolled, isEnrolled } =
-    useContext(CommonContext);
+  const { setIsEnrolled, isEnrolled } = useContext(CommonContext);
   const [course, setCourse] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(1);
@@ -22,6 +21,7 @@ const CourseContent = () => {
   const { user } = useContext(AuthContext);
   console.log("🚀 ~ CourseContent ~ user:", user);
   const navigate = useNavigate();
+  const selectedCourseId = localStorage.getItem("selectedCourseId");
 
   useEffect(() => {
     handleCourseClick();
