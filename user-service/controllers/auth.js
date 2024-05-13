@@ -2,6 +2,8 @@ import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+
+//Login Function
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
