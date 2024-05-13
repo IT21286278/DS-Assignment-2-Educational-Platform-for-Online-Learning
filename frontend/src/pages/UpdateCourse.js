@@ -141,11 +141,13 @@ const UpdateCourse = () => {
   return (
     <div className="container w-50 shadow p-4 my-3">
       <h1 className="mb-2 d-flex justify-content-center">Update Course</h1>
-      <Tooltip title="Click to delete the course">
-        <IconButton aria-label="delete" onClick={handleDeleteCourse}>
-          <DeleteIcon />
-        </IconButton>
-      </Tooltip>
+      <div className="w-100 d-flex justify-content-end ">
+        <Tooltip title="Click to delete the course">
+          <IconButton aria-label="delete" onClick={handleDeleteCourse}>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
+      </div>
       {error && <div className="alert alert-danger">{error}</div>}
       {course && (
         <form onSubmit={handleUpdate}>
