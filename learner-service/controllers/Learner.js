@@ -115,7 +115,12 @@ const enrollInCourses = async (req, res) => {
   const fetchAllCourses = async () => {
     try {
       const response = await axios.get(
-        `${process.env.COURSE_SERVICE_URL}/course/getAllCourses`
+        `${process.env.COURSE_SERVICE_URL}/course/getAllCourses`,
+        {
+          headers: {
+            Authorization: jwtToken,
+          },
+        }
       );
       return response.data.courses;
     } catch (error) {
@@ -126,7 +131,7 @@ const enrollInCourses = async (req, res) => {
   async function fecthUser() {
     try {
       const response = await axios.get(
-        `${process.env.USER_SERVICE_URL}/user/me`,
+        `${process.env.USER_SERVICE_URL}/api/me`,
         {
           headers: {
             Authorization: jwtToken,
@@ -203,7 +208,7 @@ const isEnrolled = async (req, res) => {
 };
 
 const updateLearnedContent = async (req, res) => {
-  const { courseId, contentId } = req.params;
+  const { courseId, contentId } = req.body;
   const jwtToken = req.headers.authorization;
 
   async function fecthUser() {
