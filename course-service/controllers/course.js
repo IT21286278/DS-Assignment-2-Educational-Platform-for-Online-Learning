@@ -51,8 +51,16 @@ export const createCourse = async (req, res) => {
 
 export const updateCourse = async (req, res) => {
   try {
-    const { title, description, category, companyId, image, price, courseId } =
-      req.body;
+    const {
+      title,
+      description,
+      category,
+      companyId,
+      image,
+      price,
+      courseId,
+      content,
+    } = req.body;
 
     if (
       title === "" ||
@@ -88,6 +96,7 @@ export const updateCourse = async (req, res) => {
     course.image = image;
     course.price = price;
     course.company = companyId;
+    course.content = content;
 
     await course.save();
 

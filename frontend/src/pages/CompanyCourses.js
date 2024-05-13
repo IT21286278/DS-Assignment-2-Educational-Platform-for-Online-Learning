@@ -35,6 +35,7 @@ const CompanyCourses = () => {
   const onclickCourse = (course) => {
     console.log(course);
     setSelectedCourseId(course);
+    localStorage.setItem("selectedCourseId", course);
     navigate("/updateContent");
   };
   return (
