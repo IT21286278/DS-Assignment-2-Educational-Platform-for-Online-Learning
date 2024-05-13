@@ -202,4 +202,80 @@ const isEnrolled = async (req, res) => {
   }
 };
 
-export { addNewEnrollment, cancelEnrollment, enrollInCourses, isEnrolled };
+const updateLearnedContent = async (req, res) => {
+  const { courseId, contentId } = req.params;
+  const jwtToken = req.headers.authorization;
+
+  async function fecthUser() {
+    try {
+      const response = await axios.get(
+        `${process.env.USER_SERVICE_URL}/api/me`,
+        {
+          headers: {
+            Authorization: jwtToken,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return res.status(404).json({ error: "User cannot be found!" });
+    }
+  }
+
+  try {
+    const user = await fecthUser();
+
+    const enrollment = await Enrollment.findOne({
+      userId: user._id,
+      courseId: courseId,
+    });
+
+    if (!enrollment) {
+      return res
+        .status(404)
+        .json({ error: "Learner has not enrolled to this module!" });
+    }
+
+    if (enrollment.status === "Pending") {
+      return res
+        .status(400)
+        .json({ error: "Learner has not been enrolled to this course yet!" });
+    }
+    if (enrollment.status === "Cancelled") {
+      return res
+        .status(400)
+        .json({ error: "Learner has cancelled this enrollment!" });
+    }
+
+    if (enrollment.status === "Rejected") {
+      return res
+        .status(400)
+        .json({ error: "Learner has rejected this enrollment!" });
+    }
+
+    if (enrollment.status === "Completed") {
+      return res
+        .status(400)
+        .json({ error: "Learner has already completed this course!" });
+    }
+
+    if (enrollment.coveredContent.includes(contentId)) {
+      return res
+        .status(400)
+        .json({ error: "Learner has already learned this content!" });
+    }
+
+    enrollment.coveredContent.push(contentId);
+    const savedEnrollment = await enrollment.save();
+    return res.status(200).json(savedEnrollment);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+export {
+  addNewEnrollment,
+  cancelEnrollment,
+  enrollInCourses,
+  isEnrolled,
+  updateLearnedContent,
+};
