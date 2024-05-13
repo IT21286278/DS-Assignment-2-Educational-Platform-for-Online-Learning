@@ -15,7 +15,7 @@ import upload from "../middlewares/multer.js";
 router.post("/createCompany", createCompany);
 router.get("/getCompany/:id", getCompany);
 router.get("/getAllCompanies", getAllCompanies);
-router.put("/updateCompany", upload.single("logo"), updateCompany);
+router.put("/updateCompany", updateCompany);
 router.delete("/deleteCompany/:id", deleteCompany);
 router.get("/getCompanyNames", getCompanyNames);
 

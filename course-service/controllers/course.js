@@ -50,15 +50,35 @@ export const createCourse = async (req, res) => {
 };
 
 export const updateCourse = async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: "No file was uploaded" });
-  }
-
   try {
-    const course = await Course.findById(req.body.id);
+    const {
+      title,
+      description,
+      category,
+      companyId,
+      image,
+      price,
+      courseId,
+      content,
+    } = req.body;
+
+    if (
+      title === "" ||
+      description === "" ||
+      category === "" ||
+      companyId === "" ||
+      image === "" ||
+      price === "" ||
+      courseId === ""
+    ) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ error: "Course not found" });
     }
+
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,
@@ -69,16 +89,17 @@ export const updateCourse = async (req, res) => {
     const publicId = course.image.split("/").pop().split(".")[0];
     await cloudinary.uploader.destroy(publicId);
 
-    // Upload the new image
-    const result = await cloudinary.uploader.upload(req.file.path);
-    const imagePath = result.secure_url;
-
     // Update the course
-    course.title = req.body.title;
-    course.description = req.body.description;
-    course.category = req.body.category;
-    course.image = imagePath;
+    course.title = title;
+    course.description = description;
+    course.category = category;
+    course.image = image;
+    course.price = price;
+    course.company = companyId;
+    course.content = content;
+
     await course.save();
+
     res.status(200).json({ course });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -150,8 +171,10 @@ export const getCourseByUserId = async (req, res) => {
       }
     }
     const user = await fecthUser();
+    console.log("🚀 ~ getCourseByUserId ~ user:", user);
     const userId = user._id;
-    const company = await Company.findOne({ user: userId });
+    const company = await Company.findOne({ userId: userId });
+    console.log("🚀 ~ getCourseByUserId ~ company:", company);
 
     const courses = await Course.find({ company: company._id }).select(
       "title image description"
@@ -211,6 +234,24 @@ export const addContent = async (req, res) => {
     if (type === "" || status === "") {
       return res.status(400).json({ error: "All fields are required" });
     }
+
+    const course = await Course.findById(courseId).populate("content");
+
+    // Check if there is already a content with the same order
+    const existingContent = course.content.find(
+      (content) => content.order === order
+    );
+
+    if (existingContent) {
+      // If there is, increment the order of that content and all contents with a greater order by 1
+      course.content
+        .filter((content) => content.order >= order)
+        .forEach(async (content) => {
+          content.order += 1;
+          await content.save();
+        });
+    }
+
     const content = new Content();
 
     if (type === "video") {
@@ -243,7 +284,6 @@ export const addContent = async (req, res) => {
 
     await content.save();
 
-    const course = await Course.findById(courseId);
     course.content.push(content._id);
     await course.save();
 
@@ -255,7 +295,9 @@ export const addContent = async (req, res) => {
 
 export const deleteContent = async (req, res) => {
   try {
-    const course = await Course.findById(req.params.courseId);
+    const course = await Course.findById(req.params.courseId).populate(
+      "content"
+    );
     if (!course) {
       return res.status(404).json({ error: "Course not found" });
     }
@@ -264,6 +306,14 @@ export const deleteContent = async (req, res) => {
     if (!content) {
       return res.status(404).json({ error: "Content not found" });
     }
+
+    // Decrement the order of contents that have an order greater than the one being deleted
+    course.content
+      .filter((c) => c.order > content.order)
+      .forEach(async (c) => {
+        c.order -= 1;
+        await c.save();
+      });
 
     // Delete the existing content
     const publicId = content.content.split("/").pop().split(".")[0];
