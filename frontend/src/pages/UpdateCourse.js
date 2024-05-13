@@ -3,24 +3,29 @@ import CommonContext from "../context/CommonContext";
 import ToastContext from "../context/ToastContext";
 import Loading from "../components/Loading";
 import UploadWidget from "../components/UploadWidget";
+import Delete from "@mui/icons-material/Delete";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const UpdateCourse = () => {
   const { selectedCourseId } = useContext(CommonContext);
   const { toast } = useContext(ToastContext);
   const [course, setCourse] = useState(null);
+  console.log("🚀 ~ UpdateCourse ~ course:", course);
   const [image, setImage] = useState(null);
-  const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     handleCourseClick();
-    loadCompanies();
   }, [selectedCourseId]);
 
   const handleCourseClick = async () => {
+    // localStorage.setItem("selectedCourseId", course);
+    const courseId = localStorage.getItem("selectedCourseId");
     const data = await fetch(
-      `http://localhost:8001/course/getCourseById/${selectedCourseId}`
+      `http://localhost:8001/course/getCourseById/${courseId}`
     );
     const response = await data.json();
 
@@ -35,17 +40,6 @@ const UpdateCourse = () => {
       content: sortedContent,
     });
     setImage(response.course.image);
-  };
-
-  const loadCompanies = async () => {
-    const data = await fetch("http://localhost:8001/company/getCompanyNames");
-    const response = await data.json();
-
-    if (!response.error) {
-      setCompanies(response.companies || []);
-    } else {
-      console.log(response.error);
-    }
   };
 
   const handleUpdate = async (event) => {
@@ -75,10 +69,11 @@ const UpdateCourse = () => {
             title: course.title,
             description: course.description,
             category: course.category,
-
+            companyId: course.company._id,
             price: course.price,
             image: image,
             courseId: selectedCourseId,
+            content: course.content || [],
           }),
         }
       );
@@ -102,6 +97,43 @@ const UpdateCourse = () => {
     setCourse({ ...course, [name]: value });
   };
 
+  const handleDeleteContent = (contentId, e) => {
+    // Remove the deleted content from the course state
+    e.preventDefault();
+    setCourse((prevCourse) => ({
+      ...prevCourse,
+      content: prevCourse.content.filter(
+        (content) => content._id !== contentId
+      ),
+    }));
+  };
+  const handleDeleteCourse = async () => {
+    //confirm box
+    const confirm = window.confirm(
+      "Are you sure you want to delete this course?"
+    );
+    if (!confirm) {
+      return;
+    }
+    try {
+      const response = await fetch(
+        `http://localhost:8001/course/deleteCourse/${selectedCourseId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      const data = await response.json();
+      if (data.error) {
+        toast.error(data.error);
+      } else {
+        toast.success("Course deleted successfully!");
+        // You might want to navigate to another page here or update the state to remove the deleted course
+      }
+    } catch (error) {
+      console.error("Error deleting course", error);
+    }
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -109,6 +141,11 @@ const UpdateCourse = () => {
   return (
     <div className="container w-50 shadow p-4 my-3">
       <h1 className="mb-2 d-flex justify-content-center">Update Course</h1>
+      <Tooltip title="Click to delete the course">
+        <IconButton aria-label="delete" onClick={handleDeleteCourse}>
+          <DeleteIcon />
+        </IconButton>
+      </Tooltip>
       {error && <div className="alert alert-danger">{error}</div>}
       {course && (
         <form onSubmit={handleUpdate}>
@@ -195,6 +232,22 @@ const UpdateCourse = () => {
               value={course.price}
             />
           </div>
+          {course &&
+            course.content.map((content, index) => (
+              <div
+                key={index}
+                className="d-flex justify-content-between align-items-center border p-2 my-2"
+              >
+                <p>{`Content ${index + 1}: ${content.type}`}</p>
+                {/* <button onClick={(e) => handleDeleteContent(content._id, e)}>
+                  Delete
+                </button> */}
+                <Delete
+                  onClick={(e) => handleDeleteContent(content._id, e)}
+                  style={{ cursor: "pointer" }}
+                />
+              </div>
+            ))}
 
           <div className="d-flex justify-content-center">
             <button
