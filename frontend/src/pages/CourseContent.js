@@ -35,7 +35,7 @@ const CourseContent = () => {
 
   const getEnrolledCourses = async (selectedCourseId) => {
     const data = await fetch(
-      `http://localhost:8004/enrollment/isEnrolled/${user._id}/${selectedCourseId}`
+      `http://localhost:8003/enrollment/isEnrolled/${user._id}/${selectedCourseId}`
     );
     const response = await data.json();
     console.log("🚀 ~ getEnrolledCourses ~ response:", response);
@@ -70,7 +70,7 @@ const CourseContent = () => {
   };
 
   const handleEnrollment = async () => {
-    const data = await fetch(`http://localhost:8003/checkout`, {
+    const data = await fetch(`http://localhost:8004/checkout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

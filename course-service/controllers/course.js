@@ -23,7 +23,7 @@ export const createCourse = async (req, res) => {
   try {
     // Create a product in Stripe
     const { data: stripeProduct } = await axios.post(
-      "http://localhost:8003/create-product",
+      "http://localhost:8004/create-product",
       {
         name: title,
         price: price * 100,
@@ -234,6 +234,24 @@ export const addContent = async (req, res) => {
     if (type === "" || status === "") {
       return res.status(400).json({ error: "All fields are required" });
     }
+
+    const course = await Course.findById(courseId).populate("content");
+
+    // Check if there is already a content with the same order
+    const existingContent = course.content.find(
+      (content) => content.order === order
+    );
+
+    if (existingContent) {
+      // If there is, increment the order of that content and all contents with a greater order by 1
+      course.content
+        .filter((content) => content.order >= order)
+        .forEach(async (content) => {
+          content.order += 1;
+          await content.save();
+        });
+    }
+
     const content = new Content();
 
     if (type === "video") {
@@ -266,7 +284,6 @@ export const addContent = async (req, res) => {
 
     await content.save();
 
-    const course = await Course.findById(courseId);
     course.content.push(content._id);
     await course.save();
 
@@ -278,7 +295,9 @@ export const addContent = async (req, res) => {
 
 export const deleteContent = async (req, res) => {
   try {
-    const course = await Course.findById(req.params.courseId);
+    const course = await Course.findById(req.params.courseId).populate(
+      "content"
+    );
     if (!course) {
       return res.status(404).json({ error: "Course not found" });
     }
@@ -287,6 +306,14 @@ export const deleteContent = async (req, res) => {
     if (!content) {
       return res.status(404).json({ error: "Content not found" });
     }
+
+    // Decrement the order of contents that have an order greater than the one being deleted
+    course.content
+      .filter((c) => c.order > content.order)
+      .forEach(async (c) => {
+        c.order -= 1;
+        await c.save();
+      });
 
     // Delete the existing content
     const publicId = content.content.split("/").pop().split(".")[0];
