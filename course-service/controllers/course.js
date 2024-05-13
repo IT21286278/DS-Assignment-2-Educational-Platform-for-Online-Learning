@@ -1,35 +1,36 @@
-import cloudinary from '../middlewares/cloudinary.js';
-import Content from '../models/Content.js';
-import Course from '../models/Course.js';
-import Question from '../models/Questions.js';
-import Quiz from '../models/Quiz.js';
-import axios from 'axios';
-import Company from '../models/Company.js';
+import cloudinary from "../middlewares/cloudinary.js";
+import Content from "../models/Content.js";
+import Course from "../models/Course.js";
+import Question from "../models/Questions.js";
+import Quiz from "../models/Quiz.js";
+import axios from "axios";
+import Company from "../models/Company.js";
 
 export const createCourse = async (req, res) => {
   const { title, description, category, company, image, price } = req.body;
 
   if (
-    title === '' ||
-    description === '' ||
-    category === '' ||
-    company === '' ||
-    image === '' ||
-    price === ''
+    title === "" ||
+    description === "" ||
+    category === "" ||
+    company === "" ||
+    image === "" ||
+    price === ""
   ) {
-    return res.status(400).json({ error: 'All fields are required' });
+    return res.status(400).json({ error: "All fields are required" });
   }
 
   try {
     // Create a product in Stripe
     const { data: stripeProduct } = await axios.post(
-      'http://localhost:8003/create-product',
+      "http://localhost:8003/create-product",
       {
         name: title,
-        price: price * 100, // Stripe expects the price in cents
+        price: price * 100,
+        images: [image],
       }
     );
-
+    console.log("🚀 ~ createCourse ~ stripeProduct:", stripeProduct);
     const course = new Course({
       title,
       description,
@@ -37,8 +38,9 @@ export const createCourse = async (req, res) => {
       company,
       image,
       price,
-      stripeProductId: stripeProduct.id, // Store the Stripe product ID
+      stripeProductId: stripeProduct.default_price.id,
     });
+
     await course.save();
 
     res.status(201).json({ course });
@@ -48,15 +50,27 @@ export const createCourse = async (req, res) => {
 };
 
 export const updateCourse = async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No file was uploaded' });
-  }
-
   try {
-    const course = await Course.findById(req.body.id);
-    if (!course) {
-      return res.status(404).json({ error: 'Course not found' });
+    const { title, description, category, companyId, image, price, courseId } =
+      req.body;
+
+    if (
+      title === "" ||
+      description === "" ||
+      category === "" ||
+      companyId === "" ||
+      image === "" ||
+      price === "" ||
+      courseId === ""
+    ) {
+      return res.status(400).json({ error: "All fields are required" });
     }
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,
@@ -64,19 +78,19 @@ export const updateCourse = async (req, res) => {
     });
 
     // Delete the existing image
-    const publicId = course.image.split('/').pop().split('.')[0];
+    const publicId = course.image.split("/").pop().split(".")[0];
     await cloudinary.uploader.destroy(publicId);
 
-    // Upload the new image
-    const result = await cloudinary.uploader.upload(req.file.path);
-    const imagePath = result.secure_url;
-
     // Update the course
-    course.title = req.body.title;
-    course.description = req.body.description;
-    course.category = req.body.category;
-    course.image = imagePath;
+    course.title = title;
+    course.description = description;
+    course.category = category;
+    course.image = image;
+    course.price = price;
+    course.company = companyId;
+
     await course.save();
+
     res.status(200).json({ course });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -87,9 +101,9 @@ export const deleteCourse = async (req, res) => {
   // Delete the course and course image
   try {
     const course = await Course.findById(req.params.id);
-    console.log('🚀 ~ deleteCourse ~ course:', course);
+    console.log("🚀 ~ deleteCourse ~ course:", course);
     if (!course) {
-      return res.status(404).json({ error: 'Course not found' });
+      return res.status(404).json({ error: "Course not found" });
     }
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_NAME,
@@ -99,12 +113,12 @@ export const deleteCourse = async (req, res) => {
 
     // Delete the existing image
     if (course.image) {
-      const publicId = course.image.split('/').pop().split('.')[0];
+      const publicId = course.image.split("/").pop().split(".")[0];
       await cloudinary.uploader.destroy(publicId);
     }
 
     await Course.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: 'Course deleted successfully' });
+    res.status(200).json({ message: "Course deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -121,7 +135,7 @@ export const getCourse = async (req, res) => {
 
 export const getCourseNameAndId = async (req, res) => {
   try {
-    const courses = await Course.find().select('title _id');
+    const courses = await Course.find().select("title _id");
     res.status(200).json({ courses });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -130,7 +144,7 @@ export const getCourseNameAndId = async (req, res) => {
 export const getCourseByUserId = async (req, res) => {
   try {
     const jwtToken = req.headers.authorization;
-    console.log('🚀 ~ getCourseByUserId ~ jwtToken:', jwtToken);
+    console.log("🚀 ~ getCourseByUserId ~ jwtToken:", jwtToken);
 
     async function fecthUser() {
       try {
@@ -144,15 +158,17 @@ export const getCourseByUserId = async (req, res) => {
         );
         return response.data;
       } catch (error) {
-        throw new Error('User cannot be found!');
+        throw new Error("User cannot be found!");
       }
     }
     const user = await fecthUser();
+    console.log("🚀 ~ getCourseByUserId ~ user:", user);
     const userId = user._id;
-    const company = await Company.findOne({ user: userId });
+    const company = await Company.findOne({ userId: userId });
+    console.log("🚀 ~ getCourseByUserId ~ company:", company);
 
     const courses = await Course.find({ company: company._id }).select(
-      'title image description'
+      "title image description"
     );
     res.status(200).json({ courses });
   } catch (error) {
@@ -163,8 +179,8 @@ export const getCourseByUserId = async (req, res) => {
 export const getAllCourses = async (req, res) => {
   try {
     const courses = await Course.find().populate(
-      'company',
-      '-description -status'
+      "company",
+      "-description -status"
     );
 
     res.status(200).json({ courses });
@@ -175,15 +191,15 @@ export const getAllCourses = async (req, res) => {
 export const getCourseById = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id)
-      .populate('company')
+      .populate("company")
       .populate({
-        path: 'content',
+        path: "content",
         populate: {
-          path: 'quiz',
-          model: 'Quiz',
+          path: "quiz",
+          model: "Quiz",
           populate: {
-            path: 'questions',
-            model: 'Question',
+            path: "questions",
+            model: "Question",
           },
         },
       });
@@ -195,7 +211,7 @@ export const getCourseById = async (req, res) => {
 
 export const getCourseWithCompany = async (req, res) => {
   try {
-    const course = await Course.findById(req.params.id).populate('company');
+    const course = await Course.findById(req.params.id).populate("company");
     res.status(200).json({ course });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -206,14 +222,14 @@ export const addContent = async (req, res) => {
   try {
     const { note, video, quiz, courseId, type, status, order } = req.body;
 
-    if (type === '' || status === '') {
-      return res.status(400).json({ error: 'All fields are required' });
+    if (type === "" || status === "") {
+      return res.status(400).json({ error: "All fields are required" });
     }
     const content = new Content();
 
-    if (type === 'video') {
+    if (type === "video") {
       content.video = video;
-    } else if (type === 'note') {
+    } else if (type === "note") {
       content.note = note;
     } else {
       const questions = await Promise.all(
@@ -255,16 +271,16 @@ export const deleteContent = async (req, res) => {
   try {
     const course = await Course.findById(req.params.courseId);
     if (!course) {
-      return res.status(404).json({ error: 'Course not found' });
+      return res.status(404).json({ error: "Course not found" });
     }
 
     const content = await Content.findById(req.params.contentId);
     if (!content) {
-      return res.status(404).json({ error: 'Content not found' });
+      return res.status(404).json({ error: "Content not found" });
     }
 
     // Delete the existing content
-    const publicId = content.content.split('/').pop().split('.')[0];
+    const publicId = content.content.split("/").pop().split(".")[0];
     await cloudinary.uploader.destroy(publicId);
 
     await content.remove();
