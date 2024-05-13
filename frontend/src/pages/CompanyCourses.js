@@ -40,19 +40,23 @@ const CompanyCourses = () => {
   };
   return (
     <div className="container ">
-      {courses.map((course) => (
-        <Card
-          style={{ width: "18rem" }}
-          key={course._id}
-          onClick={() => onclickCourse(course._id)}
-        >
-          <Card.Img variant="top" src={course.image} />
-          <Card.Body>
-            <Card.Title>{course.title}</Card.Title>
-            <Card.Text>{course.description}</Card.Text>
-          </Card.Body>
-        </Card>
-      ))}
+      {courses ? (
+        courses.map((course) => (
+          <Card
+            style={{ width: "18rem" }}
+            key={course._id}
+            onClick={() => onclickCourse(course._id)}
+          >
+            <Card.Img variant="top" src={course.image} />
+            <Card.Body>
+              <Card.Title>{course.title}</Card.Title>
+              <Card.Text>{course.description}</Card.Text>
+            </Card.Body>
+          </Card>
+        ))
+      ) : (
+        <h1>No courses found</h1>
+      )}
     </div>
   );
 };
