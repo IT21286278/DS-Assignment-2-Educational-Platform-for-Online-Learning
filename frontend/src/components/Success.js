@@ -8,13 +8,14 @@ import ToastContext from "../context/ToastContext";
 function Success() {
   const { user } = useContext(AuthContext);
   console.log("🚀 ~ Success ~ user:", user);
-  const { selectedCourseId } = useContext(CommonContext);
   const { setIsEnrolled } = useContext(CommonContext);
   const { toast } = useContext(ToastContext);
 
   const enrollCourse = async () => {
+    //get the course id from the local storage
+    const selectedCourseId = localStorage.getItem("selectedCourseId");
     const response = await fetch(
-      `http://localhost:8004/enrollment/addNewEnrollment/${selectedCourseId}`,
+      `http://localhost:8003/enrollment/addNewEnrollment/${selectedCourseId}`,
       {
         method: "POST",
         headers: {

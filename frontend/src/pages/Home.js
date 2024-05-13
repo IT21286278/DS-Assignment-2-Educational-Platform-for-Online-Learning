@@ -12,7 +12,7 @@ const Home = () => {
 
   const getEnrolledCourses = async (selectedCourseId) => {
     const data = await fetch(
-      `http://localhost:8004/enrollment/isEnrolled/${user._id}/${selectedCourseId}`
+      `http://localhost:8003/enrollment/isEnrolled/${user._id}/${selectedCourseId}`
     );
     const response = await data.json();
     console.log("🚀 ~ getEnrolledCourses ~ response:", response);
@@ -44,6 +44,8 @@ const Home = () => {
     getEnrolledCourses(course);
     console.log(course);
     setSelectedCourseId(course);
+    //store the selected course id in the local storage
+    localStorage.setItem("selectedCourseId", course);
     navigate("/courseContent");
   };
 

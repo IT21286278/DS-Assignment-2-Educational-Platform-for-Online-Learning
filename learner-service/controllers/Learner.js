@@ -13,32 +13,32 @@ const addNewEnrollment = async (req, res) => {
       );
       return response.data;
     } catch (error) {
-      return res.status(404).json({ error: "Course cannot be found!" });
+      throw new Error("Course cannot be found!");
     }
   }
 
-  async function fecthUser() {
-    try {
-      const response = await axios.get(
-        `${process.env.USER_SERVICE_URL}/user/me`,
-        {
-          headers: {
-            Authorization: jwtToken,
-          },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      return res.status(404).json({ error: "User cannot be found!" });
-    }
-  }
+  // async function fecthUser() {
+  //   try {
+  //     const response = await axios.get(
+  //       `${process.env.USER_SERVICE_URL}/api/me`,
+  //       {
+  //         headers: {
+  //           Authorization: jwtToken,
+  //         },
+  //       }
+  //     );
+  //     return response.data;
+  //   } catch (error) {
+  //     throw new Error("User cannot be found!");
+  //   }
+  // }
 
   try {
-    await fetchCourse(courseId);
-    const user = await fecthUser();
+    const course = await fetchCourse(courseId);
+    // const user = await fecthUser();
 
     const enrollment = await Enrollment.findOne({
-      userId: user._id,
+      userId: "663f06db6644fb8eb54394fd",
       courseId: courseId,
     });
 
@@ -49,7 +49,7 @@ const addNewEnrollment = async (req, res) => {
     }
 
     const newEnrollment = new Enrollment({
-      userId: user._id,
+      userId: "663f06db6644fb8eb54394fd",
       courseId: courseId,
       status: "Pending",
     });
@@ -194,9 +194,10 @@ const isEnrolled = async (req, res) => {
   let enrollment;
   try {
     enrollment = await Enrollment.findOne({
-      userId: userId,
+      userId: "663f06db6644fb8eb54394fd",
       courseId: courseId,
     });
+    console.log("🚀 ~ isEnrolled ~ enrollment:", enrollment);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

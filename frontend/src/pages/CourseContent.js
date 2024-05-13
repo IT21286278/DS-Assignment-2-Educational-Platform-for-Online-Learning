@@ -35,11 +35,15 @@ const CourseContent = () => {
 
   const getEnrolledCourses = async (selectedCourseId) => {
     const data = await fetch(
-      `http://localhost:8004/enrollment/isEnrolled/${user._id}/${selectedCourseId}`
+      `http://localhost:8003/enrollment/isEnrolled/${user._id}/${selectedCourseId}`
     );
     const response = await data.json();
     console.log("🚀 ~ getEnrolledCourses ~ response:", response);
-    setIsEnrolled(response);
+    if (response.isEnrolled) {
+      setIsEnrolled(true);
+    } else {
+      setIsEnrolled(false);
+    }
   };
 
   const handleCourseClick = async () => {
@@ -70,7 +74,7 @@ const CourseContent = () => {
   };
 
   const handleEnrollment = async () => {
-    const data = await fetch(`http://localhost:8003/checkout`, {
+    const data = await fetch(`http://localhost:8004/checkout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -86,7 +90,7 @@ const CourseContent = () => {
       }),
     });
     const response = await data.json();
-    window && window.open(response.url, "_blank");
+    window && window.open(response.url, "_self");
 
     setIsEnrolled(true);
   };
@@ -99,7 +103,7 @@ const CourseContent = () => {
             <h2>{course.title}</h2>
             <p>{course.description}</p>
 
-            {isEnrolled == true ? (
+            {isEnrolled ? (
               <>
                 {currentItems.map((item, index) => {
                   switch (item.type) {

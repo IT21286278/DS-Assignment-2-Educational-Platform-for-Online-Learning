@@ -23,7 +23,7 @@ export const createCourse = async (req, res) => {
   try {
     // Create a product in Stripe
     const { data: stripeProduct } = await axios.post(
-      "http://localhost:8003/create-product",
+      "http://localhost:8004/create-product",
       {
         name: title,
         price: price * 100,
