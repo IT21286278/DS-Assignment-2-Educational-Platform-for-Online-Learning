@@ -1,8 +1,43 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import TaskAltTwoToneIcon from "@mui/icons-material/TaskAltTwoTone";
 import "./Success.css";
+import AuthContext from "../context/AuthContext";
+import CommonContext from "../context/CommonContext";
+import ToastContext from "../context/ToastContext";
 
 function Success() {
+  const { user } = useContext(AuthContext);
+  console.log("🚀 ~ Success ~ user:", user);
+  const { selectedCourseId } = useContext(CommonContext);
+  const { setIsEnrolled } = useContext(CommonContext);
+  const { toast } = useContext(ToastContext);
+
+  const enrollCourse = async () => {
+    const response = await fetch(
+      `http://localhost:8004/enrollment/addNewEnrollment/${selectedCourseId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      }
+    );
+    const data = await response.json();
+    if (data.error) {
+      toast.error(data.error);
+    } else {
+      setIsEnrolled(true);
+      toast.success("Course enrolled successfully!");
+    }
+  };
+
+  useEffect(() => {
+    enrollCourse();
+  }, []);
+
   return (
     <div className='success-container'>
       <div className='success-content'>
