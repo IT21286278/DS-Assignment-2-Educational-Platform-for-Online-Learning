@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import UploadWidget from "../components/UploadWidget";
 import Loading from "../components/Loading";
 import ToastContext from "../context/ToastContext";
-
+import AuthContext from "../context/AuthContext";
 const CreateCourseScreen = () => {
   const [companies, setCompanies] = useState([]);
   const [courseData, setCourseData] = useState({
@@ -16,6 +16,8 @@ const CreateCourseScreen = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { toast } = useContext(ToastContext);
+  const { user } = useContext(AuthContext);
+  console.log("🚀 ~ CreateCourseScreen ~ user:", user);
 
   useEffect(() => {
     getCompanies();
@@ -45,7 +47,6 @@ const CreateCourseScreen = () => {
       !courseData.title ||
       !courseData.description ||
       !courseData.category ||
-      !courseData.company ||
       !courseData.price ||
       !image
     ) {
@@ -70,7 +71,7 @@ const CreateCourseScreen = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ ...courseData, image }),
+          body: JSON.stringify({ ...courseData, image, instructor: user._id }),
         }
       );
       const data = await response.json();

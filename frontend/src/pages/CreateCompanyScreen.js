@@ -40,7 +40,7 @@ const CreateCompanyScreen = () => {
       return;
     } else {
       toast.success("Company created successfully!");
-      // handleClear();
+      handleClear();
     }
 
     setLoading(false);
