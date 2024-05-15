@@ -55,7 +55,7 @@ const Register = () => {
       toast.error("password do not match");
       return;
     }
-
+    // Prepare user data for registration
     const userData = { ...credentials, confirmPassword: undefined };
     registerUser(userData);
   };
