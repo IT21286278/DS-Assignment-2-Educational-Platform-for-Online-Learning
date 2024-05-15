@@ -14,6 +14,7 @@ const Navbar = () => {
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
+    // useEffect hook to redirect to login if user is not authenticated
   useEffect(() => {
     !user && navigate("/login", { replace: true });
   }, []);
