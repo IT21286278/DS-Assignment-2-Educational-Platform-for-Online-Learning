@@ -20,9 +20,7 @@ function Success() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );

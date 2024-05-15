@@ -3,52 +3,48 @@ import cloudinary from "cloudinary";
 import axios from "axios";
 
 export const createCompany = async (req, res) => {
-  const { name, description, status, logo, email, password } = req.body;
-  if (
-    name === "" ||
-    description === "" ||
-    status === "" ||
-    logo === "" ||
-    email === "" ||
-    password === ""
-  ) {
-    return res.status(400).json({ error: "All fields are required" });
-  }
-  async function registerUser(email, password, role) {
-    try {
-      const response = await axios.post(
-        `${process.env.USER_SERVICE_URL}/api/register`,
-        {
-          email,
-          password,
-          role,
-        }
-      );
-
-      return response.data;
-    } catch (error) {
-      return res.status(404).json({ error: "User cannot be found!" });
-    }
-  }
-
-  const user = await registerUser(email, password, "Instructor");
-
-  if (user.error) {
-    return res.status(404).json({ error: "User cannot be found!" });
-  }
-
   try {
-    const company = new Company({
-      name,
-      description,
-      logo,
-      status,
-      userId: user._id,
-    });
+    const { name, description, status, logo, email, password } = req.body;
+    if (
+      name === "" ||
+      description === "" ||
+      status === "" ||
+      logo === "" ||
+      email === "" ||
+      password === ""
+    ) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
 
-    await company.save();
+    const role = "Instructor";
 
-    res.status(201).json({});
+    axios
+      .post(`${process.env.USER_SERVICE_URL}/api/register`, {
+        email,
+        password,
+        role,
+      })
+      .then(async (response) => {
+        if (response.status === 201) {
+          const company = new Company({
+            name,
+            description,
+            logo,
+            status,
+            userId: response.data._id,
+          });
+
+          await company.save();
+
+          res.status(201).json({});
+        } else {
+          return res.status(404).json({ error: response.data.error });
+        }
+      })
+      .catch((error) => {
+        // console.log(error);
+        return res.status(404).json({ error: "Error creating company" });
+      });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -126,6 +122,15 @@ export const getCompanyNames = async (req, res) => {
     res.status(200).json({ companies });
   } catch (error) {
     console.error("Error fetching companies", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getComapanies = async (req, res) => {
+  try {
+    const companies = await Company.find({}, "name  logo");
+    res.status(200).json({ companies });
+  } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };

@@ -9,6 +9,7 @@ export const CommonContextProvider = ({ children }) => {
   const { toast } = useContext(ToastContext);
 
   const [selectedCourseId, setSelectedCourseId] = useState(null);
+  const [selectedCompanyId, setSelectedCompanyId] = useState(null);
   const [isEnrolled, setIsEnrolled] = useState(false);
 
   return (
@@ -18,6 +19,8 @@ export const CommonContextProvider = ({ children }) => {
         setSelectedCourseId,
         isEnrolled,
         setIsEnrolled,
+        selectedCompanyId,
+        setSelectedCompanyId,
       }}
     >
       {children}

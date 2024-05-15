@@ -4,10 +4,13 @@ import AuthContext from "../context/AuthContext";
 import ToastContext from "../context/ToastContext";
 import logo from "../assets/Logo2.png";
 
+//Login functional component
 const Login = () => {
+    // Access loginUser function and toast from respective contexts
   const { loginUser } = useContext(AuthContext);
   const { toast } = useContext(ToastContext);
 
+    // State to manage form input values
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -19,6 +22,7 @@ const Login = () => {
     setCredentials({ ...credentials, [name]: value });
   };
 
+    // Handler function to submit login form
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!credentials.email || !credentials.password) {
@@ -26,8 +30,11 @@ const Login = () => {
       return;
     }
 
+        // Call loginUser function from AuthContext to authenticate user
     loginUser(credentials);
   };
+
+//render login component
   return (
     <div className="container  p-4">
       <form
@@ -88,5 +95,5 @@ const Login = () => {
     </div>
   );
 };
-
+// Export the Login component as the default export
 export default Login;

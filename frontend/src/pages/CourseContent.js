@@ -101,7 +101,6 @@ const CourseContent = () => {
         <Row>
           <Col md={8}>
             <h2>{course.title}</h2>
-            <p>{course.description}</p>
 
             {isEnrolled ? (
               <>
@@ -188,13 +187,27 @@ const CourseContent = () => {
               <>
                 <Container>
                   <Card>
-                    <Card.Body className='d-flex justify-content-center'>
-                      <Card.Img
-                        className='w-50'
-                        variant='top'
-                        src={course.image}
-                      />
-                      <Card.Text>Rs. {course.price}/=</Card.Text>
+                    <Card.Body>
+                      <Card.Body className='d-flex justify-content-center'>
+                        <Card.Img
+                          className='img-fluid w-50'
+                          variant='top'
+                          src={course.image}
+                        />
+
+                        <Card.Text
+                          className='mx-3 '
+                          dangerouslySetInnerHTML={{
+                            __html: course.description,
+                          }}
+                        />
+                      </Card.Body>
+                      <Card.Text
+                        className='d-flex justify-content-center'
+                        style={{ fontSize: "1.5rem" }}
+                      >
+                        Rs. {course.price}/=
+                      </Card.Text>
                     </Card.Body>
                   </Card>
                   <Button
@@ -211,7 +224,7 @@ const CourseContent = () => {
           </Col>
 
           <Col md={4}>
-            <Card style={{ marginTop: "85px" }}>
+            <Card style={{ marginTop: "47px" }}>
               <Card.Img variant='top' src={course.company.logo} />
               <Card.Body>
                 <Card.Title>{course.company.name}</Card.Title>

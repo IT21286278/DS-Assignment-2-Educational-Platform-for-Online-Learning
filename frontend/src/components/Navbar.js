@@ -6,46 +6,50 @@ import Logo from "../assets/Logo2.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 
+//Navbar functional component
 const Navbar = () => {
+    // Access toast and user information from respective contexts
   const { toast } = useContext(ToastContext);
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
+    // useEffect hook to redirect to login if user is not authenticated
   useEffect(() => {
     !user && navigate("/login", { replace: true });
   }, []);
 
+  //render Navbar
   return (
     <nav
-      className="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-lg "
+      className='navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-lg '
       style={{ fontFamily: "poppins" }}
     >
-      <div className="container-fluid">
-        <Link to="./" style={{ textDecoration: "none" }}>
-          <a className="navbar-brand">
-            <img src={Logo} alt="logo" style={{ height: "50px" }} />
+      <div className='container-fluid'>
+        <Link to='./' style={{ textDecoration: "none" }}>
+          <a className='navbar-brand'>
+            <img src={Logo} alt='logo' style={{ height: "50px" }} />
           </a>
         </Link>
         <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarColor02"
-          aria-controls="navbarColor02"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
+          className='navbar-toggler'
+          type='button'
+          data-bs-toggle='collapse'
+          data-bs-target='#navbarColor02'
+          aria-controls='navbarColor02'
+          aria-expanded='false'
+          aria-label='Toggle navigation'
         >
-          <span className="navbar-toggler-icon"></span>
+          <span className='navbar-toggler-icon'></span>
         </button>
 
-        <div className="d-flex justify-content-end w-100 mx-3">
-          <div className=" position-relative" style={{ width: "400px" }}>
+        <div className='d-flex justify-content-end w-100 mx-3'>
+          <div className=' position-relative' style={{ width: "400px" }}>
             <input
-              type="text"
-              className="form-control border-1 border-dark"
-              id="inputService"
-              name="service"
-              placeholder="Search Course..."
+              type='text'
+              className='form-control border-1 border-dark'
+              id='inputService'
+              name='service'
+              placeholder='Search Course...'
               style={{ borderRadius: "20px" }}
               // onChange={(e) => {
               //   if (e.target.value.length === 0) {
@@ -57,15 +61,15 @@ const Navbar = () => {
               // }}
             />
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-search position-absolute end-0 top-50 translate-middle-y"
-              viewBox="0 0 16 16"
+              xmlns='http://www.w3.org/2000/svg'
+              width='16'
+              height='16'
+              fill='currentColor'
+              className='bi bi-search position-absolute end-0 top-50 translate-middle-y'
+              viewBox='0 0 16 16'
               style={{ marginRight: "10px" }}
             >
-              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+              <path d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0' />
             </svg>
           </div>
         </div>
@@ -83,40 +87,79 @@ const Navbar = () => {
               </li>
           </ul>
         </div> */}
-        <div className="collapse navbar-collapse" id="navbarColor02">
-          <ul className="navbar-nav ms-auto">
+        <div
+          className='collapse navbar-collapse d-flex align-items-center '
+          id='navbarColor02'
+        >
+          <ul className='navbar-nav ms-auto'>
             {user.role === "Admin" && (
-              <li className="nav-item">
-                <Link
-                  to="./createCompanyScreen"
-                  style={{ textDecoration: "none" }}
-                >
-                  <p className="nav-item ">
-                    <button
-                      className=" btn btn-primary btn-sm btn text-nowrap"
-                      style={{
-                        backgroundColor: "white",
-                        color: "black",
-                        fontWeight: "bold",
-                        margin: "5px",
-                      }}
-                    >
-                      Create Company
-                    </button>
-                  </p>
-                </Link>
-              </li>
+              <>
+                <li className='nav-item'>
+                  <Link
+                    to='./createCompanyScreen'
+                    style={{ textDecoration: "none" }}
+                  >
+                    <p className='nav-item '>
+                      <button
+                        className=' btn btn-primary btn-sm btn text-nowrap'
+                        style={{
+                          backgroundColor: "white",
+                          color: "black",
+                          fontWeight: "bold",
+                          margin: "5px",
+                        }}
+                      >
+                        Create Company
+                      </button>
+                    </p>
+                  </Link>
+                </li>
+                <li className='nav-item'>
+                  <Link to='./courseStatus' style={{ textDecoration: "none" }}>
+                    <p className='nav-item '>
+                      <button
+                        className=' btn btn-primary btn-sm btn text-nowrap'
+                        style={{
+                          backgroundColor: "white",
+                          color: "black",
+                          fontWeight: "bold",
+                          margin: "5px",
+                        }}
+                      >
+                        Course Status
+                      </button>
+                    </p>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="./companies" style={{ textDecoration: "none" }}>
+                    <p className="nav-item ">
+                      <button
+                        className=" btn btn-primary btn-sm btn text-nowrap"
+                        style={{
+                          backgroundColor: "white",
+                          color: "black",
+                          fontWeight: "bold",
+                          margin: "5px",
+                        }}
+                      >
+                        Companies
+                      </button>
+                    </p>
+                  </Link>
+                </li>
+              </>
             )}
             {user.role === "Instructor" && (
               <>
                 <li
-                  className="nav-item"
+                  className='nav-item'
                   style={{ display: "flex", alignItems: "center" }}
                 >
-                  <Link to="./createCourses" style={{ textDecoration: "none" }}>
-                    <p className="nav-item ">
+                  <Link to='./createCourses' style={{ textDecoration: "none" }}>
+                    <p className='nav-item '>
                       <button
-                        className=" btn btn-primary btn-sm btn text-nowrap shadow-sm"
+                        className=' btn btn-primary btn-sm btn text-nowrap shadow-sm'
                         style={{
                           backgroundColor: "white",
                           color: "black",
@@ -130,11 +173,11 @@ const Navbar = () => {
                   </Link>
                 </li>
 
-                <li className="nav-item">
-                  <Link to="./addContent" style={{ textDecoration: "none" }}>
-                    <p className="nav-item ">
+                <li className='nav-item'>
+                  <Link to='./addContent' style={{ textDecoration: "none" }}>
+                    <p className='nav-item '>
                       <button
-                        className=" btn btn-primary btn-sm btn text-nowrap"
+                        className=' btn btn-primary btn-sm btn text-nowrap'
                         style={{
                           backgroundColor: "white",
                           color: "black",
@@ -148,14 +191,14 @@ const Navbar = () => {
                   </Link>
                 </li>
 
-                <li className="nav-item">
+                <li className='nav-item'>
                   <Link
-                    to="./companyCourses"
+                    to='./companyCourses'
                     style={{ textDecoration: "none" }}
                   >
-                    <p className="nav-item ">
+                    <p className='nav-item '>
                       <button
-                        className=" btn btn-primary btn-sm btn text-nowrap"
+                        className=' btn btn-primary btn-sm btn text-nowrap'
                         style={{
                           backgroundColor: "white",
                           color: "black",
@@ -171,16 +214,16 @@ const Navbar = () => {
               </>
             )}
 
-            <li className="nav-item">
-              <Link to="./" style={{ textDecoration: "none" }}>
-                <a className="nav-link">
+            <li className='nav-item'>
+              <Link to='./' style={{ textDecoration: "none" }}>
+                <a className='nav-link'>
                   <NotificationsNoneOutlinedIcon />
                 </a>
               </Link>
             </li>
-            <li className="nav-item">
-              <Link to="/profile" style={{ textDecoration: "none" }}>
-                <a className="nav-link">
+            <li className='nav-item'>
+              <Link to='/profile' style={{ textDecoration: "none" }}>
+                <a className='nav-link'>
                   <AccountCircleIcon />
                 </a>
               </Link>
@@ -192,4 +235,5 @@ const Navbar = () => {
   );
 };
 
+// Export the Navbar component as the default export
 export default Navbar;
