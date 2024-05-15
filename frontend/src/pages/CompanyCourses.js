@@ -51,7 +51,7 @@ const CompanyCourses = () => {
                 <Card.Img variant="top" src={course.image} />
                 <Card.Body>
                   <Card.Title>{course.title}</Card.Title>
-                  <Card.Text>{course.description}</Card.Text>
+                  {/* <Card.Text>{course.description}</Card.Text> */}
                 </Card.Body>
               </Card>
             </Col>

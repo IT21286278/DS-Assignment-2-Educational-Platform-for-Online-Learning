@@ -22,6 +22,10 @@ export const createCourse = async (req, res) => {
 
   const companyId = await Company.findOne({ userId: instructor });
 
+  if (!companyId) {
+    return res.status(404).json({ error: "Company not found" });
+  }
+
   try {
     // Create a product in Stripe
     const { data: stripeProduct } = await axios.post(
@@ -101,6 +105,28 @@ export const updateCourse = async (req, res) => {
     course.company = companyId;
     course.content = content;
 
+    await course.save();
+
+    res.status(200).json({ course });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const updateCourseStatus = async (req, res) => {
+  try {
+    const { status, courseId } = req.body;
+
+    if (status === "" || courseId === "") {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    course.status = status;
     await course.save();
 
     res.status(200).json({ course });
@@ -190,11 +216,9 @@ export const getCourseByUserId = async (req, res) => {
 
 export const getAllCourses = async (req, res) => {
   try {
-    const courses = await Course.find().populate(
-      "company",
-      "-description -status"
-    );
-
+    const courses = await Course.find({
+      status: "published",
+    }).populate("company", "-description -status");
     res.status(200).json({ courses });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -232,10 +256,7 @@ export const getCourseWithCompany = async (req, res) => {
 
 export const fetchAllDraftCourses = async (req, res) => {
   try {
-    const courses = await Course.find({ status: "draft" }).populate(
-      "company",
-      "-description -status"
-    );
+    const courses = await Course.find({}, "_id title status image");
     res.status(200).json({ courses });
   } catch (error) {
     res.status(500).json({ error: error.message });
