@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import AuthContext from "../context/AuthContext";
 import Footer from "./Footer";
 
+//layout functional component
 const Layout = ({ children }) => {
   const { user } = useContext(AuthContext);
   return (
