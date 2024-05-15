@@ -1,5 +1,6 @@
 import React from "react";
 
+//Loading functional component
 const Loading = ({ text }) => {
   return (
     <div className='d-flex justify-content-center align-items-center'>
