@@ -112,7 +112,7 @@ const Dashboard = () => {
     autoplay: true,
     autoplaySpeed: 5000, // Change image every 10 seconds
   };
-
+  //Render dahsboard component
   return (
     <div
       className='container w-100 h-50 my-2 rounded border'
@@ -136,4 +136,5 @@ const Dashboard = () => {
   );
 };
 
+//Export Dashboard component
 export default Dashboard;

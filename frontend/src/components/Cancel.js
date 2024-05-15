@@ -2,6 +2,7 @@ import React from "react";
 import { Cancel as CancelIcon } from "@mui/icons-material";
 import "./Cancel.css";
 
+//cancel functional component
 function Cancel() {
   return (
     <div className='cancel-container'>
@@ -22,4 +23,5 @@ function Cancel() {
   );
 }
 
+// Export the Cancel component as the default export
 export default Cancel;

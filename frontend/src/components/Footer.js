@@ -3,7 +3,10 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 
+
+//footer functional component
 const Footer = () => {
+  //Render the footer component
   return (
     <div
       className='my-4 bg-light w-100 shadow-lg '
@@ -38,4 +41,5 @@ const Footer = () => {
   );
 };
 
+// Export the Footer component as the default export
 export default Footer;
