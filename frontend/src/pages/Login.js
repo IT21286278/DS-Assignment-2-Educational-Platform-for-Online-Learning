@@ -34,7 +34,7 @@ const Login = () => {
     loginUser(credentials);
   };
 
-
+//render login component
   return (
     <div className="container  p-4">
       <form
@@ -95,5 +95,5 @@ const Login = () => {
     </div>
   );
 };
-
+// Export the Login component as the default export
 export default Login;
