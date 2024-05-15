@@ -5,6 +5,7 @@ import ToastContext from "../context/ToastContext";
 import Logo from "../assets/Logo2.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import CourseStatusScreen from "../pages/CourseStatusScreen";
 
 const Navbar = () => {
   const { toast } = useContext(ToastContext);
@@ -86,26 +87,45 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarColor02">
           <ul className="navbar-nav ms-auto">
             {user.role === "Admin" && (
-              <li className="nav-item">
-                <Link
-                  to="./createCompanyScreen"
-                  style={{ textDecoration: "none" }}
-                >
-                  <p className="nav-item ">
-                    <button
-                      className=" btn btn-primary btn-sm btn text-nowrap"
-                      style={{
-                        backgroundColor: "white",
-                        color: "black",
-                        fontWeight: "bold",
-                        margin: "5px",
-                      }}
-                    >
-                      Create Company
-                    </button>
-                  </p>
-                </Link>
-              </li>
+              <>
+                <li className="nav-item">
+                  <Link
+                    to="./createCompanyScreen"
+                    style={{ textDecoration: "none" }}
+                  >
+                    <p className="nav-item ">
+                      <button
+                        className=" btn btn-primary btn-sm btn text-nowrap"
+                        style={{
+                          backgroundColor: "white",
+                          color: "black",
+                          fontWeight: "bold",
+                          margin: "5px",
+                        }}
+                      >
+                        Create Company
+                      </button>
+                    </p>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="./courseStatus" style={{ textDecoration: "none" }}>
+                    <p className="nav-item ">
+                      <button
+                        className=" btn btn-primary btn-sm btn text-nowrap"
+                        style={{
+                          backgroundColor: "white",
+                          color: "black",
+                          fontWeight: "bold",
+                          margin: "5px",
+                        }}
+                      >
+                        Course Status
+                      </button>
+                    </p>
+                  </Link>
+                </li>
+              </>
             )}
             {user.role === "Instructor" && (
               <>

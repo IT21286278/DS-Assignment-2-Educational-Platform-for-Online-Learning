@@ -17,6 +17,7 @@ import CourseContent from "./pages/CourseContent";
 import { CommonContextProvider } from "./context/CommonContext";
 import CompanyCourses from "./pages/CompanyCourses";
 import UpdateCourse from "./pages/UpdateCourse";
+import CourseStatusScreen from "./pages/CourseStatusScreen";
 
 const App = () => {
   return (
@@ -45,6 +46,7 @@ const App = () => {
               <Route path="/courseContent" element={<CourseContent />} />
               <Route path="/companyCourses" element={<CompanyCourses />} />
               <Route path="/updateContent" element={<UpdateCourse />} />
+              <Route path="/courseStatus" element={<CourseStatusScreen />} />
             </Routes>
           </Layout>
         </AuthContextProvider>
