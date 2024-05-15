@@ -10,6 +10,7 @@ const Login = () => {
   const { loginUser } = useContext(AuthContext);
   const { toast } = useContext(ToastContext);
 
+    // State to manage form input values
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
