@@ -17,25 +17,25 @@ const addNewEnrollment = async (req, res) => {
     }
   }
 
-  // async function fecthUser() {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.USER_SERVICE_URL}/api/me`,
-  //       {
-  //         headers: {
-  //           Authorization: jwtToken,
-  //         },
-  //       }
-  //     );
-  //     return response.data;
-  //   } catch (error) {
-  //     throw new Error("User cannot be found!");
-  //   }
-  // }
+  async function fecthUser() {
+    try {
+      const response = await axios.get(
+        `${process.env.USER_SERVICE_URL}/api/me`,
+        {
+          headers: {
+            Authorization: jwtToken,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error("User cannot be found!");
+    }
+  }
 
   try {
     const course = await fetchCourse(courseId);
-    // const user = await fecthUser();
+    const user = await fecthUser();
 
     const enrollment = await Enrollment.findOne({
       userId: "663f06db6644fb8eb54394fd",
