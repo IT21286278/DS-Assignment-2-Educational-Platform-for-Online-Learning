@@ -33,7 +33,7 @@ export const createCompany = async (req, res) => {
 
   const user = await registerUser(email, password, "Instructor");
 
-  if (user.error) {
+  if (!user) {
     return res.status(404).json({ error: "User cannot be found!" });
   }
 
