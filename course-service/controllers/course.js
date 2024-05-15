@@ -113,6 +113,28 @@ export const updateCourse = async (req, res) => {
   }
 };
 
+export const updateCourseStatus = async (req, res) => {
+  try {
+    const { status, courseId } = req.body;
+
+    if (status === "" || courseId === "") {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    course.status = status;
+    await course.save();
+
+    res.status(200).json({ course });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const deleteCourse = async (req, res) => {
   // Delete the course and course image
   try {
@@ -194,11 +216,9 @@ export const getCourseByUserId = async (req, res) => {
 
 export const getAllCourses = async (req, res) => {
   try {
-    const courses = await Course.find().populate(
-      "company",
-      "-description -status"
-    );
-
+    const courses = await Course.find({
+      status: "published",
+    }).populate("company", "-description -status");
     res.status(200).json({ courses });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -236,10 +256,7 @@ export const getCourseWithCompany = async (req, res) => {
 
 export const fetchAllDraftCourses = async (req, res) => {
   try {
-    const courses = await Course.find(
-      { status: "draft" },
-      "_id title status image"
-    );
+    const courses = await Course.find({}, "_id title status image");
     res.status(200).json({ courses });
   } catch (error) {
     res.status(500).json({ error: error.message });
