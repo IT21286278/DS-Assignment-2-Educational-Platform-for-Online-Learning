@@ -1,1 +1,1 @@
-USER_SERVIC_BASE_URL = "";
+export const USER_SERVICE_BASE_URL = "dsfsdfdsf";
