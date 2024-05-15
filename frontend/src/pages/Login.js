@@ -30,8 +30,11 @@ const Login = () => {
       return;
     }
 
+        // Call loginUser function from AuthContext to authenticate user
     loginUser(credentials);
   };
+
+
   return (
     <div className="container  p-4">
       <form
