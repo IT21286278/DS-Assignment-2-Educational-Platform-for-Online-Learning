@@ -18,6 +18,7 @@ const CourseSchema = new mongoose.Schema(
         ref: "Content",
       },
     ],
+    status: { type: String, enum: ["draft", "published", "deleted"] },
   },
   {
     timestamps: true,
