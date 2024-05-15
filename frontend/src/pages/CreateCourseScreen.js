@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import UploadWidget from "../components/UploadWidget";
 import Loading from "../components/Loading";
 import ToastContext from "../context/ToastContext";
+import AuthContext from "../context/AuthContext";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-import AuthContext from "../context/AuthContext";
 const CreateCourseScreen = () => {
   const [companies, setCompanies] = useState([]);
   const [courseData, setCourseData] = useState({
@@ -133,14 +133,7 @@ const CreateCourseScreen = () => {
           <label htmlFor='description' className='form-label'>
             Description
           </label>
-          {/* <textarea
-            className="form-control"
-            id="description"
-            placeholder="Enter course description"
-            name="description"
-            onChange={(e) => handleChange(e)}
-            value={courseData.description}
-          ></textarea> */}
+
           <ReactQuill
             value={courseData.description}
             onChange={(value) =>
