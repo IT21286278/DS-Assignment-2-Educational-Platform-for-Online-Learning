@@ -11,5 +11,5 @@ const Loading = ({ text }) => {
     </div>
   );
 };
-
+// Export the Loading component as the default export
 export default Loading;
