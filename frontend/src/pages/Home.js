@@ -1,9 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import AuthContext from "../context/AuthContext";
-import Dashboard from "../components/Dashboard";
-import CourseCard from "../components/CourseCard";
-import CommonContext from "../context/CommonContext";
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AuthContext from '../context/AuthContext';
+import Dashboard from '../components/Dashboard';
+import CourseCard from '../components/CourseCard';
+import CommonContext from '../context/CommonContext';
+import {
+  COURSE_SERVICE_BASE_URL,
+  LEARNER_SERVICE_BASE_URL,
+} from '../config/config';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -12,25 +16,25 @@ const Home = () => {
 
   const getEnrolledCourses = async (selectedCourseId) => {
     const data = await fetch(
-      `http://localhost:8003/enrollment/isEnrolled/${user._id}/${selectedCourseId}`
+      `${LEARNER_SERVICE_BASE_URL}/isEnrolled/${user._id}/${selectedCourseId}`
     );
     const response = await data.json();
-    console.log("🚀 ~ getEnrolledCourses ~ response:", response);
+    console.log('🚀 ~ getEnrolledCourses ~ response:', response);
     setIsEnrolled(response);
   };
 
   useEffect(() => {
-    !user && navigate("/login", { replace: true });
+    !user && navigate('/login', { replace: true });
   }, []);
 
   const [courses, setCourses] = useState([]);
-  console.log("🚀 ~ Home ~ courses:", courses);
+  console.log('🚀 ~ Home ~ courses:', courses);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         const data = await fetch(
-          "http://localhost:8001/course/getAllCourses"
+          `${COURSE_SERVICE_BASE_URL}/getAllCourses`
         ).then((res) => res.json());
         setCourses(data.courses);
         // console.log(data);
@@ -45,8 +49,8 @@ const Home = () => {
     console.log(course);
     setSelectedCourseId(course);
     //store the selected course id in the local storage
-    localStorage.setItem("selectedCourseId", course);
-    navigate("/courseContent");
+    localStorage.setItem('selectedCourseId', course);
+    navigate('/courseContent');
   };
 
   return (
