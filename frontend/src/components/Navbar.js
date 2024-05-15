@@ -216,4 +216,5 @@ const Navbar = () => {
   );
 };
 
+// Export the Navbar component as the default export
 export default Navbar;
