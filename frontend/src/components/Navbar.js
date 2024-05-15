@@ -7,7 +7,9 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import CourseStatusScreen from "../pages/CourseStatusScreen";
 
+//Navbar functional component
 const Navbar = () => {
+    // Access toast and user information from respective contexts
   const { toast } = useContext(ToastContext);
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
