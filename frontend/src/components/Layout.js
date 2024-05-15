@@ -6,6 +6,7 @@ import Footer from "./Footer";
 //layout functional component
 const Layout = ({ children }) => {
   const { user } = useContext(AuthContext);
+    //Render layout component
   return (
     <>
       {user && (
