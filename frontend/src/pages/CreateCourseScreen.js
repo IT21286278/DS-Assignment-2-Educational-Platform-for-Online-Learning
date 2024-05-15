@@ -164,7 +164,7 @@ const CreateCourseScreen = () => {
           </select>
         </div>
 
-        <div className="mb-3">
+        {/* <div className="mb-3">
           <label htmlFor="company" className="form-label">
             Company
           </label>
@@ -182,7 +182,7 @@ const CreateCourseScreen = () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
 
         <div className="mb-3 d-flex justify-content-start">
           <label htmlFor="image" className="form-label me-3">

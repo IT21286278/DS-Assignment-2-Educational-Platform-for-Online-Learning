@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Card } from "react-bootstrap";
+import { Card, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import CommonContext from "../context/CommonContext";
@@ -40,23 +40,26 @@ const CompanyCourses = () => {
   };
   return (
     <div className="container ">
-      {courses ? (
-        courses.map((course) => (
-          <Card
-            style={{ width: "18rem" }}
-            key={course._id}
-            onClick={() => onclickCourse(course._id)}
-          >
-            <Card.Img variant="top" src={course.image} />
-            <Card.Body>
-              <Card.Title>{course.title}</Card.Title>
-              <Card.Text>{course.description}</Card.Text>
-            </Card.Body>
-          </Card>
-        ))
-      ) : (
-        <h1>No courses found</h1>
-      )}
+      <Row>
+        {courses ? (
+          courses.map((course) => (
+            <Col xs={12} sm={6} md={4} lg={3} key={course._id}>
+              <Card
+                style={{ width: "100%", marginBottom: "20px" }}
+                onClick={() => onclickCourse(course._id)}
+              >
+                <Card.Img variant="top" src={course.image} />
+                <Card.Body>
+                  <Card.Title>{course.title}</Card.Title>
+                  <Card.Text>{course.description}</Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))
+        ) : (
+          <h1>No courses found</h1>
+        )}
+      </Row>
     </div>
   );
 };
