@@ -5,6 +5,7 @@ import ToastContext from "../context/ToastContext";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
+import AuthContext from "../context/AuthContext";
 const CreateCourseScreen = () => {
   const [companies, setCompanies] = useState([]);
   const [courseData, setCourseData] = useState({
@@ -18,6 +19,8 @@ const CreateCourseScreen = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { toast } = useContext(ToastContext);
+  const { user } = useContext(AuthContext);
+  console.log("🚀 ~ CreateCourseScreen ~ user:", user);
 
   useEffect(() => {
     getCompanies();
@@ -71,7 +74,7 @@ const CreateCourseScreen = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ ...courseData, image }),
+          body: JSON.stringify({ ...courseData, image, instructor: user._id }),
         }
       );
       const data = await response.json();

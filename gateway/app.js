@@ -13,9 +13,18 @@ app.use(express.json()); //Send respones in json fomrat
 app.use(morgan('tiny')); //log requests
 app.use(cors());
 
-app.use('/course', proxy('http://localhost:8001'));
-app.use('/user', proxy('http://localhost:8002'));
-app.use('/enrollment', proxy('http://localhost:8003'));
+app.use('/course', proxy(process.env.COURSE_SERVICE_URL));
+app.use('/user', proxy(process.env.USER_SERVICE_URL));
+app.use('/enrollment', proxy(process.env.LEARNING_SERVICE_URL));
+app.use('/payment', proxy(process.env.PAYMENT_SERVICE_URL));
+app.use('/notification', proxy(process.env.NOTIFICATION_SERVICE_URL));
+
+app.all('*', (req, res) => {
+  res.status(404).json({
+    status: 'fail',
+    message: `Can't find ${req.originalUrl} on this server!`,
+  });
+});
 
 //server config
 const PORT = process.env.PORT || 9000;

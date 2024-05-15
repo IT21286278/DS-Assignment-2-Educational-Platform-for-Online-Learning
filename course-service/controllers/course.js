@@ -7,18 +7,20 @@ import axios from "axios";
 import Company from "../models/Company.js";
 
 export const createCourse = async (req, res) => {
-  const { title, description, category, company, image, price } = req.body;
+  const { title, description, category, instructor, image, price } = req.body;
 
   if (
     title === "" ||
     description === "" ||
     category === "" ||
-    company === "" ||
     image === "" ||
-    price === ""
+    price === "" ||
+    instructor === ""
   ) {
     return res.status(400).json({ error: "All fields are required" });
   }
+
+  const companyId = await Company.findOne({ userId: instructor });
 
   try {
     // Create a product in Stripe
@@ -35,10 +37,11 @@ export const createCourse = async (req, res) => {
       title,
       description,
       category,
-      company,
+      company: companyId,
       image,
       price,
       stripeProductId: stripeProduct.default_price.id,
+      status: "draft",
     });
 
     await course.save();
@@ -222,6 +225,18 @@ export const getCourseWithCompany = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id).populate("company");
     res.status(200).json({ course });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const fetchAllDraftCourses = async (req, res) => {
+  try {
+    const courses = await Course.find({ status: "draft" }).populate(
+      "company",
+      "-description -status"
+    );
+    res.status(200).json({ courses });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
