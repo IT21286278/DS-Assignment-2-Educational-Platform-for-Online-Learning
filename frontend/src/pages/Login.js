@@ -22,6 +22,7 @@ const Login = () => {
     setCredentials({ ...credentials, [name]: value });
   };
 
+    // Handler function to submit login form
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!credentials.email || !credentials.password) {
