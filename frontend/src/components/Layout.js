@@ -15,7 +15,11 @@ const Layout = ({ children }) => {
       <div className='container' style={{ fontFamily: "poppins" }}>
         {children}
       </div>
-      {user && <Footer />}
+      {user && (
+        <div className='m-0'>
+          <Footer />
+        </div>
+      )}
     </>
   );
 };
