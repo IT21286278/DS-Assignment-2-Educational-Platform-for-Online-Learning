@@ -39,6 +39,7 @@ export const createCourse = async (req, res) => {
       image,
       price,
       stripeProductId: stripeProduct.default_price.id,
+      status: "draft",
     });
 
     await course.save();
