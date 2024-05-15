@@ -6,17 +6,18 @@ import {
   updateCompany,
   deleteCompany,
   getCompanyNames,
+  getComapanies,
 } from "../controllers/company.js";
 
 const router = express.Router();
 
-import upload from "../middlewares/multer.js";
-
 router.post("/createCompany", createCompany);
 router.get("/getCompany/:id", getCompany);
 router.get("/getAllCompanies", getAllCompanies);
-router.put("/updateCompany", updateCompany);
+router.put("/updateCompany/:id", updateCompany);
 router.delete("/deleteCompany/:id", deleteCompany);
 router.get("/getCompanyNames", getCompanyNames);
+router.get("/getComapanies", getComapanies);
+router.get("/getCompany/:id", getCompany);
 
 export default router;

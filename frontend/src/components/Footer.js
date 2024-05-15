@@ -9,7 +9,7 @@ const Footer = () => {
       className="m-0 bg-light w-100 shadow-lg "
       style={{ fontFamily: "poppins" }}
     >
-      <footer className="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top px-2">
+      <footer className="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top px-2 ">
         <div className="col-md-4 d-flex align-items-center">
           <span className="mb-3 mb-md-0 text-body-secondary">
             &copy; 2024 PACH Tech. All rights reserved.

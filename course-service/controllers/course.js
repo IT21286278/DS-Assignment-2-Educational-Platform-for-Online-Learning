@@ -224,6 +224,7 @@ export const getAllCourses = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 export const getCourseById = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id)
