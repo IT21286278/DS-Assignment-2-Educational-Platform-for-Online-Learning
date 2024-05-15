@@ -7,6 +7,7 @@ import dash2 from "../assets/dashboard2.jpg";
 import dash3 from "../assets/dashboard3.jpg";
 import dash4 from "../assets/dashboard4.jpg";
 
+//Dashboard functional component
 const Dashboard = () => {
   const settings = {
     dots: true,
@@ -17,7 +18,7 @@ const Dashboard = () => {
     autoplay: true,
     autoplaySpeed: 3000, // Change image every 10 seconds
   };
-
+//Render dahsboard component
   return (
     <div className='container w-50  my-2 rounded border'>
       <Slider {...settings}>
@@ -38,4 +39,5 @@ const Dashboard = () => {
   );
 };
 
+//Export Dashboard component
 export default Dashboard;
