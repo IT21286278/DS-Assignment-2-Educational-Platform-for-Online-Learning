@@ -15,7 +15,7 @@ const Dashboard = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 10000, // Change image every 10 seconds
+    autoplaySpeed: 3000, // Change image every 10 seconds
   };
 
   return (
