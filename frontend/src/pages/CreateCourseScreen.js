@@ -192,6 +192,7 @@ const CreateCourseScreen = () => {
           <UploadWidget onUpload={setImage} />
         </div>
         {image && (
+          // eslint-disable-next-line jsx-a11y/img-redundant-alt
           <img
             src={image}
             alt="Course Image"
