@@ -1,5 +1,6 @@
 import React from "react";
 
+//CourseCard functional component
 const CourseCard = ({
   title,
   image,
@@ -9,6 +10,8 @@ const CourseCard = ({
   onclickCourse,
   _id,
 }) => {
+    // Render the CourseCard component
+
   return (
     <div className='card' onClick={() => onclickCourse(_id)}>
       <img
@@ -42,4 +45,5 @@ const CourseCard = ({
   );
 };
 
+// Export the CourseCard component as the default export
 export default CourseCard;
