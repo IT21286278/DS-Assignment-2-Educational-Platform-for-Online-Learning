@@ -19,6 +19,7 @@ const Navbar = () => {
     !user && navigate("/login", { replace: true });
   }, []);
 
+  //render Navbar
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-lg "
