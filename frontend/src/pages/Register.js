@@ -60,6 +60,7 @@ const Register = () => {
     registerUser(userData);
   };
 
+  // Export the Register component as the default export
   return (
     <div className="container p-4">
       <form
