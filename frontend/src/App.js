@@ -19,6 +19,9 @@ import CompanyCourses from "./pages/CompanyCourses";
 import UpdateCourse from "./pages/UpdateCourse";
 import CourseStatusScreen from "./pages/CourseStatusScreen";
 
+import Companies from "./pages/Companies";
+import UpdateCompany from "./pages/UpdateCompany";
+
 const App = () => {
   return (
     <ToastContextProvider>
@@ -27,15 +30,11 @@ const App = () => {
           <Layout>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
               <Route path="/createCourses" element={<CreateCourseScreen />} />
-              <Route path="*" element={<Home />} />
               <Route
                 path="/createCompanyScreen"
                 element={<CreateCompanyScreen />}
               />
-              <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/courses" element={<SampleCourse />} />
@@ -47,6 +46,8 @@ const App = () => {
               <Route path="/companyCourses" element={<CompanyCourses />} />
               <Route path="/updateContent" element={<UpdateCourse />} />
               <Route path="/courseStatus" element={<CourseStatusScreen />} />
+              <Route path="/companies" element={<Companies />} />
+              <Route path="/updateCompany" element={<UpdateCompany />} />
             </Routes>
           </Layout>
         </AuthContextProvider>
