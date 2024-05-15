@@ -25,5 +25,5 @@ const Layout = ({ children }) => {
     </>
   );
 };
-
+// Export the Layout component as the default export
 export default Layout;
