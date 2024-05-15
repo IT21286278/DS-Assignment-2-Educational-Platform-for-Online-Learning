@@ -4,7 +4,9 @@ import AuthContext from "../context/AuthContext";
 import ToastContext from "../context/ToastContext";
 import logo from "../assets/Logo2.png";
 
+//Login functional component
 const Login = () => {
+    // Access loginUser function and toast from respective contexts
   const { loginUser } = useContext(AuthContext);
   const { toast } = useContext(ToastContext);
 
