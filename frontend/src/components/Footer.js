@@ -6,6 +6,7 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 
 //footer functional component
 const Footer = () => {
+  //Render the footer component
   return (
     <div
       className='my-4 bg-light w-100 shadow-lg '
