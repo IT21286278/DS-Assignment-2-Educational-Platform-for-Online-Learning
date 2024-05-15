@@ -22,6 +22,10 @@ export const createCourse = async (req, res) => {
 
   const companyId = await Company.findOne({ userId: instructor });
 
+  if (!companyId) {
+    return res.status(404).json({ error: "Company not found" });
+  }
+
   try {
     // Create a product in Stripe
     const { data: stripeProduct } = await axios.post(

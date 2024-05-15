@@ -10,6 +10,7 @@ import {
   getCourseById,
   getCourseNameAndId,
   getCourseByUserId,
+  fetchAllDraftCourses,
 } from "../controllers/course.js";
 import upload from "../middlewares/multer.js";
 // import { fetchUser } from "../utils/fetchUser.js";
@@ -26,6 +27,7 @@ router.get("/getCourseWithCompany/:id", getCourseWithCompany);
 router.get("/getCourseById/:id", getCourseById);
 router.get("/getCourseNameAndId", getCourseNameAndId);
 router.get("/getCourseByUserId", getCourseByUserId);
+router.get("/fetchAllDraftCourses", fetchAllDraftCourses);
 
 // router.get("/test", fetchUser, (req, res) => {
 //   res.status(200).json({ user: req.user });
