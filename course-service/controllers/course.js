@@ -236,9 +236,9 @@ export const getCourseWithCompany = async (req, res) => {
 
 export const fetchAllDraftCourses = async (req, res) => {
   try {
-    const courses = await Course.find({ status: "draft" }).populate(
-      "company",
-      "-description -status"
+    const courses = await Course.find(
+      { status: "draft" },
+      "_id title status image"
     );
     res.status(200).json({ courses });
   } catch (error) {
