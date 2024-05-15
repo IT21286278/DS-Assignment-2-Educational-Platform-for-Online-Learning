@@ -5,11 +5,12 @@ import Enrollment from "../models/Enrollment.js";
 const addNewEnrollment = async (req, res) => {
   const { courseId } = req.params;
   const jwtToken = req.headers.authorization;
+  console.log("🚀 ~ addNewEnrollment ~ jwtToken:", jwtToken);
 
   async function fetchCourse(courseId) {
     try {
       const response = await axios.get(
-        `${process.env.COURSE_SERVICE_URL}/course/getCourse/${courseId}`
+        `${process.env.COURSE_SERVICE_URL}/course/getCourseById/${courseId}`
       );
       return response.data;
     } catch (error) {
@@ -17,16 +18,14 @@ const addNewEnrollment = async (req, res) => {
     }
   }
 
-  async function fecthUser() {
+  async function fetchUser() {
     try {
-      const response = await axios.get(
-        `${process.env.USER_SERVICE_URL}/api/me`,
-        {
-          headers: {
-            Authorization: jwtToken,
-          },
-        }
-      );
+      const response = await axios.get(`http://localhost:8002/api/me`, {
+        headers: {
+          // "Content-Type": "application/json",
+          Authorization: jwtToken,
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error("User cannot be found!");
@@ -35,10 +34,11 @@ const addNewEnrollment = async (req, res) => {
 
   try {
     const course = await fetchCourse(courseId);
-    const user = await fecthUser();
+    const user = await fetchUser();
+    console.log("🚀 ~ addNewEnrollment ~ user:", user);
 
     const enrollment = await Enrollment.findOne({
-      userId: "663f06db6644fb8eb54394fd",
+      userId: user._id,
       courseId: courseId,
     });
 
@@ -49,7 +49,7 @@ const addNewEnrollment = async (req, res) => {
     }
 
     const newEnrollment = new Enrollment({
-      userId: "663f06db6644fb8eb54394fd",
+      userId: user._id,
       courseId: courseId,
       status: "Pending",
     });
@@ -194,7 +194,7 @@ const isEnrolled = async (req, res) => {
   let enrollment;
   try {
     enrollment = await Enrollment.findOne({
-      userId: "663f06db6644fb8eb54394fd",
+      userId: userId,
       courseId: courseId,
     });
     console.log("🚀 ~ isEnrolled ~ enrollment:", enrollment);

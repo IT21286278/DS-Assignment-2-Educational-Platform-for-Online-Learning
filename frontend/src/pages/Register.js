@@ -4,14 +4,21 @@ import ToastContext from "../context/ToastContext";
 import AuthContext from "../context/AuthContext";
 import logo from "../assets/Logo2.png";
 
+//Register functional component
 const Register = () => {
+
+  // Access toast and registerUser function from respective contexts
   const { toast } = useContext(ToastContext);
   const { registerUser } = useContext(AuthContext);
+
+    // State to manage form input values
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
     confirmPassword: "",
   });
+
+    // Handler function to update input values in state
   const handleInputChange = (event) => {
     const { name, value } = event.target;
 
@@ -21,6 +28,7 @@ const Register = () => {
     event.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+      // Validate input fields
     if (
       !credentials.email ||
       !credentials.password ||
@@ -30,11 +38,13 @@ const Register = () => {
       return;
     }
 
+        // Validate email format
     if (!emailRegex.test(credentials.email)) {
       toast.error("Please enter a valid email address!");
       return;
     }
 
+        // Validate password length
     if (credentials.password.length <= 6) {
       toast.error("Password should be more than 6 characters!");
       return;
@@ -45,10 +55,12 @@ const Register = () => {
       toast.error("password do not match");
       return;
     }
-
+    // Prepare user data for registration
     const userData = { ...credentials, confirmPassword: undefined };
     registerUser(userData);
   };
+
+  // Export the Register component as the default export
   return (
     <div className="container p-4">
       <form
@@ -123,4 +135,5 @@ const Register = () => {
   );
 };
 
+// Export the Register component as the default export
 export default Register;
