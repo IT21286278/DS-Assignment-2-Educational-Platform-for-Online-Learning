@@ -2,6 +2,7 @@ import Company from '../models/Company.js';
 import cloudinary from 'cloudinary';
 import axios from 'axios';
 
+//create company
 export const createCompany = async (req, res) => {
   try {
     const { name, description, status, logo, email, password } = req.body;
