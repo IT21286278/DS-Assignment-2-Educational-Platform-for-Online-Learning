@@ -1,29 +1,31 @@
-import React, { useContext, useEffect, useState } from "react";
-import CommonContext from "../context/CommonContext";
-import ToastContext from "../context/ToastContext";
-import Loading from "../components/Loading";
-import UploadWidget from "../components/UploadWidget";
-import Delete from "@mui/icons-material/Delete";
-import Tooltip from "@mui/material/Tooltip";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
+import React, { useContext, useEffect, useState } from 'react';
+import CommonContext from '../context/CommonContext';
+import ToastContext from '../context/ToastContext';
+import Loading from '../components/Loading';
+import UploadWidget from '../components/UploadWidget';
+import Delete from '@mui/icons-material/Delete';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ReactQuill from 'react-quill';
+import { useNavigate } from 'react-router-dom';
 
 const UpdateCourse = () => {
   const { selectedCourseId } = useContext(CommonContext);
   const { toast } = useContext(ToastContext);
   const [course, setCourse] = useState(null);
-  console.log("🚀 ~ UpdateCourse ~ course:", course);
+  console.log('🚀 ~ UpdateCourse ~ course:', course);
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
   useEffect(() => {
     handleCourseClick();
   }, [selectedCourseId]);
 
   const handleCourseClick = async () => {
     // localStorage.setItem("selectedCourseId", course);
-    const courseId = localStorage.getItem("selectedCourseId");
+    const courseId = localStorage.getItem('selectedCourseId');
     const data = await fetch(
       `http://localhost:8001/course/getCourseById/${courseId}`
     );
@@ -52,7 +54,7 @@ const UpdateCourse = () => {
       !course.category ||
       !course.price
     ) {
-      setError("Please fill in all fields");
+      setError('Please fill in all fields');
       setLoading(false);
       return;
     }
@@ -61,9 +63,9 @@ const UpdateCourse = () => {
       const response = await fetch(
         `http://localhost:8001/course/updateCourse`,
         {
-          method: "PUT",
+          method: 'PUT',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             title: course.title,
@@ -83,10 +85,11 @@ const UpdateCourse = () => {
         setLoading(false);
         return;
       } else {
-        toast.success("Course updated successfully!");
+        toast.success('Course updated successfully!');
+        navigate('/companyCourses');
       }
     } catch (error) {
-      console.error("Error updating course", error);
+      console.error('Error updating course', error);
     }
 
     setLoading(false);
@@ -110,7 +113,7 @@ const UpdateCourse = () => {
   const handleDeleteCourse = async () => {
     //confirm box
     const confirm = window.confirm(
-      "Are you sure you want to delete this course?"
+      'Are you sure you want to delete this course?'
     );
     if (!confirm) {
       return;
@@ -119,18 +122,18 @@ const UpdateCourse = () => {
       const response = await fetch(
         `http://localhost:8001/course/deleteCourse/${selectedCourseId}`,
         {
-          method: "DELETE",
+          method: 'DELETE',
         }
       );
       const data = await response.json();
       if (data.error) {
         toast.error(data.error);
       } else {
-        toast.success("Course deleted successfully!");
-        // You might want to navigate to another page here or update the state to remove the deleted course
+        toast.success('Course deleted successfully!');
+        navigate('/companyCourses');
       }
     } catch (error) {
-      console.error("Error deleting course", error);
+      console.error('Error deleting course', error);
     }
   };
 
@@ -170,14 +173,20 @@ const UpdateCourse = () => {
             <label htmlFor="description" className="form-label">
               Description
             </label>
-            <textarea
+            <ReactQuill
+              placeholder="Enter course description"
+              name="description"
+              value={course.description}
+              onChange={(value) => setCourse({ ...course, description: value })}
+            />
+            {/* <textarea
               className="form-control"
               id="description"
               placeholder="Enter course description"
               name="description"
               onChange={(e) => handleChange(e)}
               value={course.description}
-            ></textarea>
+            ></textarea> */}
           </div>
 
           <div className="mb-3">
@@ -216,7 +225,7 @@ const UpdateCourse = () => {
               src={image}
               alt="Course Image"
               className="img-fluid w-50 h-50"
-              style={{ maxWidth: "100px" }}
+              style={{ maxWidth: '100px' }}
             />
           )}
 
@@ -246,7 +255,7 @@ const UpdateCourse = () => {
                 </button> */}
                 <Delete
                   onClick={(e) => handleDeleteContent(content._id, e)}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                 />
               </div>
             ))}
@@ -255,7 +264,7 @@ const UpdateCourse = () => {
             <button
               type="submit"
               className="btn"
-              style={{ borderColor: "#0455bf", color: "#0455bf" }}
+              style={{ borderColor: '#0455bf', color: '#0455bf' }}
               onClick={handleUpdate}
             >
               Update Course

@@ -1,11 +1,11 @@
-import Learner from "../models/Learner.js";
-import axios from "axios";
-import Enrollment from "../models/Enrollment.js";
+import Learner from '../models/Learner.js';
+import axios from 'axios';
+import Enrollment from '../models/Enrollment.js';
 
 const addNewEnrollment = async (req, res) => {
   const { courseId } = req.params;
   const jwtToken = req.headers.authorization;
-  console.log("🚀 ~ addNewEnrollment ~ jwtToken:", jwtToken);
+  console.log('🚀 ~ addNewEnrollment ~ jwtToken:', jwtToken);
 
   async function fetchCourse(courseId) {
     try {
@@ -14,13 +14,13 @@ const addNewEnrollment = async (req, res) => {
       );
       return response.data;
     } catch (error) {
-      throw new Error("Course cannot be found!");
+      throw new Error('Course cannot be found!');
     }
   }
 
   async function fetchUser() {
     try {
-      const response = await axios.get(`http://localhost:8002/api/me`, {
+      const response = await axios.get(`${process.env.USER_SERVICE_URL}/me`, {
         headers: {
           // "Content-Type": "application/json",
           Authorization: jwtToken,
@@ -28,14 +28,14 @@ const addNewEnrollment = async (req, res) => {
       });
       return response.data;
     } catch (error) {
-      throw new Error("User cannot be found!");
+      throw new Error('User cannot be found!');
     }
   }
 
   try {
     const course = await fetchCourse(courseId);
     const user = await fetchUser();
-    console.log("🚀 ~ addNewEnrollment ~ user:", user);
+    console.log('🚀 ~ addNewEnrollment ~ user:', user);
 
     const enrollment = await Enrollment.findOne({
       userId: user._id,
@@ -45,13 +45,13 @@ const addNewEnrollment = async (req, res) => {
     if (enrollment) {
       return res
         .status(400)
-        .json({ error: "Learner has already enrolled to this module!" });
+        .json({ error: 'Learner has already enrolled to this module!' });
     }
 
     const newEnrollment = new Enrollment({
       userId: user._id,
       courseId: courseId,
-      status: "Pending",
+      status: 'Pending',
     });
     const savedEnrollment = await newEnrollment.save();
     return res.status(201).json(savedEnrollment);
@@ -66,17 +66,14 @@ const cancelEnrollment = async (req, res) => {
 
   async function fecthUser() {
     try {
-      const response = await axios.get(
-        `${process.env.USER_SERVICE_URL}/user/me`,
-        {
-          headers: {
-            Authorization: jwtToken,
-          },
-        }
-      );
+      const response = await axios.get(`${process.env.USER_SERVICE_URL}/me`, {
+        headers: {
+          Authorization: jwtToken,
+        },
+      });
       return response.data;
     } catch (error) {
-      return res.status(404).json({ error: "User cannot be found!" });
+      return res.status(404).json({ error: 'User cannot be found!' });
     }
   }
 
@@ -91,16 +88,16 @@ const cancelEnrollment = async (req, res) => {
     if (!enrollment) {
       return res
         .status(404)
-        .json({ error: "Learner has not enrolled to this module!" });
+        .json({ error: 'Learner has not enrolled to this module!' });
     }
 
-    if (enrollment.status === "Cancelled") {
+    if (enrollment.status === 'Cancelled') {
       return res
         .status(400)
-        .json({ error: "Learner has already cancelled this enrollment!" });
+        .json({ error: 'Learner has already cancelled this enrollment!' });
     }
 
-    enrollment.status = "Cancelled";
+    enrollment.status = 'Cancelled';
     const savedEnrollment = await enrollment.save();
     return res.status(200).json(savedEnrollment);
   } catch (error) {
@@ -124,23 +121,20 @@ const enrollInCourses = async (req, res) => {
       );
       return response.data.courses;
     } catch (error) {
-      throw new Error("Failed to fetch courses");
+      throw new Error('Failed to fetch courses');
     }
   };
 
   async function fecthUser() {
     try {
-      const response = await axios.get(
-        `${process.env.USER_SERVICE_URL}/api/me`,
-        {
-          headers: {
-            Authorization: jwtToken,
-          },
-        }
-      );
+      const response = await axios.get(`${process.env.USER_SERVICE_URL}/me`, {
+        headers: {
+          Authorization: jwtToken,
+        },
+      });
       return response.data;
     } catch (error) {
-      return res.status(404).json({ error: "User cannot be found!" });
+      return res.status(404).json({ error: 'User cannot be found!' });
     }
   }
 
@@ -165,7 +159,7 @@ const enrollInCourses = async (req, res) => {
     if (alreadyEnrolledCourses.length > 0) {
       return res.status(400).json({
         message: `You are already enrolled in the following courses: ${alreadyEnrolledCourses.join(
-          ", "
+          ', '
         )}`,
       });
     }
@@ -179,9 +173,9 @@ const enrollInCourses = async (req, res) => {
 
     return res
       .status(201)
-      .json({ message: "Enrolled successfully", enrollments });
+      .json({ message: 'Enrolled successfully', enrollments });
   } catch (error) {
-    console.error("Failed to enroll learner:", error);
+    console.error('Failed to enroll learner:', error);
     throw error;
   }
 };
@@ -197,7 +191,7 @@ const isEnrolled = async (req, res) => {
       userId: userId,
       courseId: courseId,
     });
-    console.log("🚀 ~ isEnrolled ~ enrollment:", enrollment);
+    console.log('🚀 ~ isEnrolled ~ enrollment:', enrollment);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -214,17 +208,14 @@ const updateLearnedContent = async (req, res) => {
 
   async function fecthUser() {
     try {
-      const response = await axios.get(
-        `${process.env.USER_SERVICE_URL}/api/me`,
-        {
-          headers: {
-            Authorization: jwtToken,
-          },
-        }
-      );
+      const response = await axios.get(`${process.env.USER_SERVICE_URL}/me`, {
+        headers: {
+          Authorization: jwtToken,
+        },
+      });
       return response.data;
     } catch (error) {
-      return res.status(404).json({ error: "User cannot be found!" });
+      return res.status(404).json({ error: 'User cannot be found!' });
     }
   }
 
@@ -239,36 +230,36 @@ const updateLearnedContent = async (req, res) => {
     if (!enrollment) {
       return res
         .status(404)
-        .json({ error: "Learner has not enrolled to this module!" });
+        .json({ error: 'Learner has not enrolled to this module!' });
     }
 
-    if (enrollment.status === "Pending") {
+    if (enrollment.status === 'Pending') {
       return res
         .status(400)
-        .json({ error: "Learner has not been enrolled to this course yet!" });
+        .json({ error: 'Learner has not been enrolled to this course yet!' });
     }
-    if (enrollment.status === "Cancelled") {
+    if (enrollment.status === 'Cancelled') {
       return res
         .status(400)
-        .json({ error: "Learner has cancelled this enrollment!" });
-    }
-
-    if (enrollment.status === "Rejected") {
-      return res
-        .status(400)
-        .json({ error: "Learner has rejected this enrollment!" });
+        .json({ error: 'Learner has cancelled this enrollment!' });
     }
 
-    if (enrollment.status === "Completed") {
+    if (enrollment.status === 'Rejected') {
       return res
         .status(400)
-        .json({ error: "Learner has already completed this course!" });
+        .json({ error: 'Learner has rejected this enrollment!' });
+    }
+
+    if (enrollment.status === 'Completed') {
+      return res
+        .status(400)
+        .json({ error: 'Learner has already completed this course!' });
     }
 
     if (enrollment.coveredContent.includes(contentId)) {
       return res
         .status(400)
-        .json({ error: "Learner has already learned this content!" });
+        .json({ error: 'Learner has already learned this content!' });
     }
 
     enrollment.coveredContent.push(contentId);
