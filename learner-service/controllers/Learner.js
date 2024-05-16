@@ -54,6 +54,13 @@ const addNewEnrollment = async (req, res) => {
       status: 'Pending',
     });
     const savedEnrollment = await newEnrollment.save();
+
+    await axios.post("http://localhost:8005/send-notification", {
+      studentEmails: ["donzchamika@gmail.com"],
+      subject: "EduRookie - New Course Enrollment!",
+      message:
+        "You have successfully enrolled in the course. Please wait for the approval from the admin!",
+    });
     return res.status(201).json(savedEnrollment);
   } catch (error) {
     return res.status(500).json({ error: error.message });

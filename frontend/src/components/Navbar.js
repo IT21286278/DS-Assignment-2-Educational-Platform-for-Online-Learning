@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import ToastContext from '../context/ToastContext';
@@ -11,12 +11,43 @@ const Navbar = () => {
   // Access toast and user information from respective contexts
   const { toast } = useContext(ToastContext);
   const { user, setUser } = useContext(AuthContext);
+  const [course, setCourse] = useState('');
+  const [showCourse, setShowCourse] = useState(false);
+  const [courses, setCourses] = useState([]);
   const navigate = useNavigate();
 
   // useEffect hook to redirect to login if user is not authenticated
   useEffect(() => {
     !user && navigate('/login', { replace: true });
   }, []);
+
+  const whileTypingCourseSearch = (e) => {
+    fetch(`http://localhost:8001/course/search/${e.target.value}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.courses.length > 0) {
+          console.log('🚀 ~ .then ~ data:', data.courses);
+          setCourses(data.courses);
+        } else {
+          setCourses([]);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setCourse(value);
+  };
+
+  function hadleCourseNameClick(course) {
+    localStorage.setItem('selectedCourseId', course._id);
+
+    navigate('/courseContent');
+    // setCourse("");
+  }
 
   //render Navbar
   return (
@@ -47,19 +78,46 @@ const Navbar = () => {
             <input
               type="text"
               className="form-control border-1 border-dark"
-              id="inputService"
-              name="service"
+              id="inputCourse"
+              name="course"
               placeholder="Search Course..."
               style={{ borderRadius: '20px' }}
-              // onChange={(e) => {
-              //   if (e.target.value.length === 0) {
-              //     getServiceDetails();
-              //   }
-              //   if (e.target.value) {
-              //     whileTypingServiceSearch(e);
-              //   }
-              // }}
+              value={course}
+              onChange={(e) => {
+                handleInputChange(e);
+                setShowCourse(e.target.value.length > 0);
+                if (e.target.value) {
+                  whileTypingCourseSearch(e);
+                }
+              }}
             />
+            {showCourse && (
+              <div
+                className="dropdown-menu show position-absolute w-100"
+                style={{
+                  maxHeight: '200px',
+                  overflowY: 'auto',
+                  backgroundColor: '#e9ecef',
+                }}
+              >
+                {courses.map((course) => (
+                  <a
+                    className="dropdown-item"
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleInputChange({
+                        target: { name: 'course', value: course.title },
+                      });
+                      hadleCourseNameClick(course);
+                      setShowCourse(false);
+                    }}
+                  >
+                    {course.title}
+                  </a>
+                ))}
+              </div>
+            )}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"

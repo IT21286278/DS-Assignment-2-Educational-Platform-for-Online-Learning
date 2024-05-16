@@ -50,6 +50,14 @@ export const createCourse = async (req, res) => {
 
     await course.save();
 
+    // http://localhost:8005/send-notification
+    await axios.post("http://localhost:8005/send-notification", {
+      studentEmails: ["donzchamika@gmail.com"],
+      subject: "EduRookie - New Course Created",
+      message:
+        "Course created successfully! Please check the course list for more details.",
+    });
+
     res.status(201).json({ course });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -358,6 +366,27 @@ export const deleteContent = async (req, res) => {
     await course.save();
 
     res.status(200).json({ course });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// search course by title
+export const searchCourse = async (req, res) => {
+  const { title } = req.params;
+  console.log("🚀 ~ searchCourse ~ title:", title);
+  try {
+    const courses = await Course.find({
+      title: { $regex: title, $options: "i" },
+    });
+
+    //id and title of the course
+    const courseNameAndId = courses.map((course) => ({
+      _id: course._id,
+      title: course.title,
+    }));
+
+    res.status(200).json({ courses: courseNameAndId });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

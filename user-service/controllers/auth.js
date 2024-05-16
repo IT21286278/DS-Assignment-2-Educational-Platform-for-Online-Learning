@@ -1,7 +1,7 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import axios from "axios";
 
 //Login Function
 export const login = async (req, res) => {
@@ -50,7 +50,6 @@ export const login = async (req, res) => {
   }
 };
 
-
 //Regsiter Function
 export const register = async (req, res) => {
   const { email, password, role } = req.body;
@@ -91,6 +90,13 @@ export const register = async (req, res) => {
     //save user
     const result = await newUser.save();
 
+    await axios.post("http://localhost:8005/send-notification", {
+      studentEmails: ["donzchamika@gmail.com"],
+      subject: "EduRookie - Registration Success!",
+      message:
+        "Welcome to EduRookie! You have successfully registered to our platform. Enjoy learning!",
+    });
+
     result._doc.password = undefined;
 
     return res.status(201).json({ ...result._doc, message: "User created" });
@@ -99,5 +105,3 @@ export const register = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
-
-
