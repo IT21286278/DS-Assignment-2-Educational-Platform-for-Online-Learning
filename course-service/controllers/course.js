@@ -51,12 +51,15 @@ export const createCourse = async (req, res) => {
     await course.save();
 
     // http://localhost:8005/send-notification
-    await axios.post("http://localhost:8005/send-notification", {
-      studentEmails: ["donzchamika@gmail.com"],
-      subject: "EduRookie - New Course Created",
-      message:
-        "Course created successfully! Please check the course list for more details.",
-    });
+    await axios.post(
+      `${process.env.NOTIFICATION_SERVICE_URL}/send-notification`,
+      {
+        studentEmails: ['donzchamika@gmail.com'],
+        subject: 'EduRookie - New Course Created',
+        message:
+          'Course created successfully! Please check the course list for more details.',
+      }
+    );
 
     res.status(201).json({ course });
   } catch (error) {
@@ -374,10 +377,10 @@ export const deleteContent = async (req, res) => {
 // search course by title
 export const searchCourse = async (req, res) => {
   const { title } = req.params;
-  console.log("🚀 ~ searchCourse ~ title:", title);
+  console.log('🚀 ~ searchCourse ~ title:', title);
   try {
     const courses = await Course.find({
-      title: { $regex: title, $options: "i" },
+      title: { $regex: title, $options: 'i' },
     });
 
     //id and title of the course

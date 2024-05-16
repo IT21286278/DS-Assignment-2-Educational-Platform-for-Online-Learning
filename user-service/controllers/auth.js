@@ -1,7 +1,7 @@
-import User from "../models/User.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import axios from "axios";
+import User from '../models/User.js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import axios from 'axios';
 
 //Login Function
 export const login = async (req, res) => {
@@ -25,25 +25,25 @@ export const login = async (req, res) => {
     const isUserExist = await User.findOne({ email });
 
     if (!isUserExist)
-      return res.status(400).json({ error: "Invalid email or password." });
+      return res.status(400).json({ error: 'Invalid email or password.' });
 
     //if email exists match password
     const isPsswordMatch = await bcrypt.compare(password, isUserExist.password);
 
     if (!isPsswordMatch)
-      return res.status(400).json({ error: "Invalid email or password." });
+      return res.status(400).json({ error: 'Invalid email or password.' });
 
     //generate token:
     const payload = { _id: isUserExist._id }; //id of the user as payload
 
     const jwtToken = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "3h",
+      expiresIn: '3h',
     });
 
     const user = { ...isUserExist._doc, password: undefined };
     return res
       .status(200)
-      .json({ jwtToken, user, message: "Login successful" });
+      .json({ jwtToken, user, message: 'Login successful' });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: err.message });
@@ -90,16 +90,19 @@ export const register = async (req, res) => {
     //save user
     const result = await newUser.save();
 
-    await axios.post("http://localhost:8005/send-notification", {
-      studentEmails: ["donzchamika@gmail.com"],
-      subject: "EduRookie - Registration Success!",
-      message:
-        "Welcome to EduRookie! You have successfully registered to our platform. Enjoy learning!",
-    });
+    await axios.post(
+      `${process.env.NOTIFICATION_SERVICE_URL}/send-notification`,
+      {
+        studentEmails: ['donzchamika@gmail.com'],
+        subject: 'EduRookie - Registration Success!',
+        message:
+          'Welcome to EduRookie! You have successfully registered to our platform. Enjoy learning!',
+      }
+    );
 
     result._doc.password = undefined;
 
-    return res.status(201).json({ ...result._doc, message: "User created" });
+    return res.status(201).json({ ...result._doc, message: 'User created' });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: err.message });
