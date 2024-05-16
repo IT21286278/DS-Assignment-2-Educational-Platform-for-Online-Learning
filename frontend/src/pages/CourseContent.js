@@ -11,6 +11,7 @@ import {
 } from "react-bootstrap";
 import AuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 
 const CourseContent = () => {
   const { setIsEnrolled, isEnrolled } = useContext(CommonContext);
@@ -34,6 +35,11 @@ const CourseContent = () => {
   }, []);
 
   const getEnrolledCourses = async (selectedCourseId) => {
+    // if the user is null shows the Loading component
+    if (!user) {
+      return <Loading text='Loading' />;
+    }
+
     const data = await fetch(
       `http://localhost:8003/enrollment/isEnrolled/${user._id}/${selectedCourseId}`
     );
