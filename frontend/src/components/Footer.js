@@ -8,8 +8,13 @@ const Footer = () => {
   //Render the footer component
   return (
     <div
-      className="my-4 bg-light w-100 shadow-lg "
-      style={{ fontFamily: "poppins" }}
+      className=" bg-light w-100 shadow-lg "
+      style={{
+        fontFamily: "poppins",
+        position: "fixed",
+        bottom: "0",
+        width: "100%",
+      }}
     >
       <footer className="d-flex flex-wrap justify-content-between align-items-center py-3 my-0 border-top px-2">
         <div className="col-md-4 d-flex align-items-center">

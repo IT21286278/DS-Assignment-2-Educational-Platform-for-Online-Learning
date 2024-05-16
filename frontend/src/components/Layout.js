@@ -6,7 +6,7 @@ import Footer from "./Footer";
 //layout functional component
 const Layout = ({ children }) => {
   const { user } = useContext(AuthContext);
-    //Render layout component
+  //Render layout component
   return (
     <>
       {user && (
@@ -14,11 +14,14 @@ const Layout = ({ children }) => {
           <Navbar />
         </div>
       )}
-      <div className='container' style={{ fontFamily: "poppins" }}>
+      <div
+        className="container "
+        style={{ fontFamily: "poppins", marginBottom: "100px" }}
+      >
         {children}
       </div>
       {user && (
-        <div className='m-0'>
+        <div className="m-0">
           <Footer />
         </div>
       )}
